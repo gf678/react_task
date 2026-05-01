@@ -9,10 +9,7 @@ type RetryableRequestConfig = InternalAxiosRequestConfig & { // _retry フラグ
 };
 
 // 1. BASE_URL 設定 (環境に応じて変更)
-const BASE_URL =
-  window.location.hostname === "localhost"
-    ? "http://localhost:3003"
-    : "http://deer2922.ddns.net:3003";
+const BASE_URL = import.meta.env.DEV ? "http://localhost:3003" : "";
 
 // 2. Axios インスタンス生成
 const api = axios.create({

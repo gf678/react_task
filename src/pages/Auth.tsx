@@ -66,7 +66,7 @@ const Auth = () => {
     setSuccessMsg("");
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
+    const email = String(formData.get("email") || "").trim();
 
     try {
       // バックエンドのパスワードリセットAPIを呼び出す想定

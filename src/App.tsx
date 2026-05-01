@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import UserEdit from "./pages/UserEdit";
 import AdminPage from "./pages/Admin";
+import ResetPassword from "./pages/ResetPassword";
 
 import BoardContainer from "./pages/board/boardContainer";
 import PostWrite from "./pages/board/post/PostWrite";
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/board/:boardName/list" element={<BoardContainer />} />
         <Route path="/board/:boardName/post/:postId" element={<PostDetail />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/board/:boardName/write"
           element={
