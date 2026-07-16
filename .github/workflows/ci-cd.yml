@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: build pipeline
 
 on:
   push:
@@ -16,10 +16,10 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
 
         with:
-          host: ${{ ssh.SERVER_HOST }}
-          port: ${{ ssh.SERVER_PORT }}
-          username: ${{ ssh.SERVER_USER }}
-          password: ${{ ssh.SERVER_PASSWORD }}
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
 
           script: |
             cd /var/www/plug
