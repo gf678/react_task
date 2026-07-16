@@ -510,13 +510,20 @@ const AdminPage = () => {
                     </td>
 
                     <td className="px-4 py-4">
-                      {user.role}
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs ring-1 ${roleBadgeClass(
+                          user.role
+                        )}`}
+                      >
+                        {user.role}
+                      </span>
                     </td>
 
                     <td className="px-4 py-4">
                       {user.role === "USER" && (
                         <button
                           onClick={() => updateRole(user.id, "MODERATOR")}
+                          disabled={updatingUserId === user.id}
                           className="rounded-xl bg-indigo-500 px-3 py-2 text-xs text-white"
                         >
                           {t("Promote")}
@@ -526,6 +533,7 @@ const AdminPage = () => {
                       {user.role === "MODERATOR" && (
                         <button
                           onClick={() => updateRole(user.id, "USER")}
+                          disabled={updatingUserId === user.id}
                           className="rounded-xl bg-red-500 px-3 py-2 text-xs text-white"
                         >
                           {t("Demote")}
