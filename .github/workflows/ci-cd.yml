@@ -6,12 +6,10 @@ on:
       - main
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Build on Server via SSH
         uses: appleboy/ssh-action@v1.0.3
 
@@ -23,6 +21,15 @@ jobs:
 
           script: |
             set -e
+
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            nvm use 22
+
+            echo "Node: $(node -v)"
+            echo "NPM : $(npm -v)"
+            echo "PATH: $PATH"
 
             cd /home/myDev/task/jstask
 
