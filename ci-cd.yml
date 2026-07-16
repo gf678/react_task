@@ -11,34 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 소스 받기
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      # 2. Node 설정
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Build on Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+
         with:
-          node-version: 20
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
 
-      # 3. 패키지 설치
-      - name: Install dependencies
-        run: npm ci
+          script: |
+            cd /var/www/plug
 
-      # 4. React Build
-      - name: Build React App
-        run: npm run build
+            git pull origin main
 
-      # 5. 빌드 파일 이동
-      - name: Move build files
-        run: |
-          rm -rf /var/www/plug
-          mkdir -p /var/www/plug
-          cp -r dist/* /var/www/plug/
+            npm ci
 
-      # 6. 결과물 저장
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: react-build
-          path: deploy
+            npm run build
+
+            sudo rm -rf /var/www/html_new
+            sudo mkdir -p /var/www/html_new
+
+            sudo cp -r dist/* /var/www/html_new/
+
+            sudo rm -rf /var/www/html/*
+            sudo cp -r /var/www/html_new/* /var/www/html/
