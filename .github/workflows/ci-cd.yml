@@ -22,7 +22,9 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
 
           script: |
-            cd /var/www/plug
+            set -e
+
+            cd /home/myDev/task/jstask
 
             git pull origin main
 
@@ -30,10 +32,8 @@ jobs:
 
             npm run build
 
-            sudo rm -rf /var/www/html_new
-            sudo mkdir -p /var/www/html_new
+            rm -rf /var/www/plug/*
 
-            sudo cp -r dist/* /var/www/html_new/
+            cp -r dist/* /var/www/plug/
 
-            sudo rm -rf /var/www/html/*
-            sudo cp -r /var/www/html_new/* /var/www/html/
+            rm -rf dist
