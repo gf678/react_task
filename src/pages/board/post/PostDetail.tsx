@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CommentTree from "./comment/CommentTree";
 import api from "../../../api/axios";
 import type { CommentData, CurrentUser, UserRole } from "./comment/CommentTypes";
+import { useTranslation } from "react-i18next";
 
 // ユーザー情報のインターフェース: ニックネーム、ログインID、オプションで権限ロールを保持
 interface User {
@@ -33,6 +34,7 @@ const PostDetail = () => {
   // React Routerの useNavigate と useParams フックを使用
   const navigate = useNavigate();
   const { boardName, postId } = useParams();
+  const { t } = useTranslation();
 
   const [post, setPost] = useState<Post | null>(null);
   const [likes, setLikes] = useState(0);
@@ -163,7 +165,7 @@ const PostDetail = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-sky-50 px-4 py-10">
         <div className="mx-auto max-w-5xl rounded-3xl border border-white/70 bg-white/90 p-10 text-center text-gray-400 shadow-sm backdrop-blur">
-          loading...
+          {t("common.loading")}
         </div>
       </div>
     );
@@ -178,24 +180,28 @@ const PostDetail = () => {
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-500">
-                  Post
+                  {t("post.label")}
                 </p>
+
                 <h1 className="mt-2 break-words text-3xl font-bold text-gray-900">
                   {post.title}
                 </h1>
 
                 <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-gray-500">
                   <span className="rounded-full bg-gray-100 px-3 py-1">
-                    {post.user?.alias ?? "匿名"}
+                    {post.user?.alias ?? t("common.anonymous")}
                   </span>
+
                   <span className="rounded-full bg-gray-100 px-3 py-1">
                     {formatDate(post.createdAt)}
                   </span>
+
                   <span className="rounded-full bg-gray-100 px-3 py-1">
-                    閲覧数 {post.views}
+                    {t("post.views", { count: post.views })}
                   </span>
+
                   <span className="rounded-full bg-pink-50 px-3 py-1 text-pink-600">
-                    いいね {likes - dislikes}
+                    {t("post.likes", { count: likes - dislikes })}
                   </span>
                 </div>
               </div>
@@ -204,7 +210,7 @@ const PostDetail = () => {
                 onClick={() => navigate(`/board/${boardName}/list`)}
                 className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
               >
-                一覧へ
+                {t("common.backToList")}
               </button>
             </div>
           </div>
@@ -215,7 +221,6 @@ const PostDetail = () => {
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
-            {/* 評価ボタンエリア */}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <button
                 onClick={handleLike}
@@ -233,14 +238,15 @@ const PostDetail = () => {
             </div>
           </div>
 
-          {/* 管理メニュー (投稿者本人のみ表示) */}
           <div className="flex flex-wrap items-center justify-end gap-2 border-t border-gray-100 bg-gray-50/70 px-6 py-4">
             {currentUser?.loginId === post.user?.loginId && (
               <button
-                onClick={() => navigate(`/board/${boardName}/update/${post.postId}`)}
+                onClick={() =>
+                  navigate(`/board/${boardName}/update/${post.postId}`)
+                }
                 className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-200 transition hover:bg-gray-50"
               >
-                編集
+                {t("common.edit")}
               </button>
             )}
 
@@ -249,7 +255,7 @@ const PostDetail = () => {
                 onClick={handleDelete}
                 className="rounded-xl bg-red-50 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-100"
               >
-                削除
+                {t("common.delete")}
               </button>
             )}
           </div>
@@ -260,10 +266,13 @@ const PostDetail = () => {
           <div className="mb-5 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                コメント
+                {t("comment.title")}
               </h2>
+
               <p className="mt-1 text-sm text-gray-500">
-                合計 {post.comments?.length || 0}件のコメント
+                {t("comment.total", {
+                  count: post.comments?.length || 0,
+                })}
               </p>
             </div>
 
@@ -271,7 +280,7 @@ const PostDetail = () => {
               {post.comments?.length || 0}
             </span>
           </div>
-          
+
           <CommentTree
             comments={post.comments}
             currentUser={currentUser}
@@ -280,32 +289,33 @@ const PostDetail = () => {
             onDeleteSuccess={handleCommentDeleted}
           />
 
-          {/* コメント入力エリア */}
           <div className="mt-8 border-t border-gray-100 pt-6">
             {isAuthenticated ? (
               <div className="space-y-4">
                 {parentId && (
                   <div className="flex items-center justify-between rounded-2xl bg-indigo-50 px-4 py-3 text-sm text-indigo-600">
-                    <span>返信を入力中です。</span>
+                    <span>{t("comment.replying")}</span>
+
                     <button
                       type="button"
                       onClick={() => setParentId(null)}
                       className="font-medium transition hover:text-indigo-800"
                     >
-                      取消
+                      {t("common.cancel")}
                     </button>
                   </div>
                 )}
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    コメントを書く
+                    {t("comment.write")}
                   </label>
+
                   <textarea
                     value={commentInput}
                     onChange={(e) => setCommentInput(e.target.value)}
                     className="min-h-[120px] w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
-                    placeholder="コメントを入力してください"
+                    placeholder={t("comment.placeholder")}
                   />
                 </div>
 
@@ -314,13 +324,13 @@ const PostDetail = () => {
                     onClick={handleCommentSubmit}
                     className="rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-pink-600"
                   >
-                    投稿
+                    {t("common.submit")}
                   </button>
                 </div>
               </div>
             ) : (
               <div className="rounded-2xl bg-gray-50 px-4 py-8 text-center text-sm text-gray-400">
-                ログインが必要です。
+                {t("auth.loginRequired")}
               </div>
             )}
           </div>

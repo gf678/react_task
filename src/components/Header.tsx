@@ -6,6 +6,7 @@ import { logout, setUser } from "../store/authSlice";
 import { useCallback, useEffect, useState } from "react";
 import api from "../api/axios";
 import { normalizeProfileImg } from "../utils/profileImage";
+import { useTranslation } from "react-i18next";
 
 // 掲示板情報の型定義
 interface Board {
@@ -28,6 +29,17 @@ const Header = () => {
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<Board[]>([]);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = () => {
+    const nextLang =
+      i18n.language === "ko"
+        ? "ja"
+        : "ko";
+
+    i18n.changeLanguage(nextLang);
+  };
 
   // ユーザー情報の同期関数
   const syncMe = useCallback(async () => {
@@ -198,7 +210,9 @@ const Header = () => {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-500">
               PLUG
             </p>
-            <p className="text-sm font-semibold text-gray-900">Connect Better</p>
+            <p className="text-sm font-semibold text-gray-900">
+              Connect Better
+            </p>
           </div>
         </Link>
 
@@ -212,7 +226,7 @@ const Header = () => {
                   : "text-gray-700 hover:bg-pink-50 hover:text-pink-600"
               }`}
             >
-              全体チャンネル
+              {t("AllChannel")}
             </button>
 
             {openMenu === "all" && (
@@ -229,7 +243,7 @@ const Header = () => {
                   ))
                 ) : (
                   <div className="px-3 py-3 text-sm text-gray-400">
-                    チャンネルがありません。
+                    {t("NoChannels")}
                   </div>
                 )}
               </div>
@@ -246,7 +260,7 @@ const Header = () => {
                     : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
                 }`}
               >
-                お気に入り
+                {t("Favorite")}
               </button>
 
               {openMenu === "fav" && (
@@ -263,7 +277,7 @@ const Header = () => {
                     ))
                   ) : (
                     <div className="px-3 py-3 text-sm text-gray-400">
-                      購読中のチャンネルはありません。
+                      {t("NoSubscribedChannels")}
                     </div>
                   )}
                 </div>
@@ -271,12 +285,71 @@ const Header = () => {
             </div>
           )}
         </div>
+        
+        {/* 言語切替ボタン */}
+        <button
+          onClick={changeLanguage}
+          className="
+            group
+            flex
+            shrink-0
+            items-center
+            gap-1
+            rounded-2xl
+            border
+            border-white/70
+            bg-white/80
+            px-2
+            py-1.5
+            text-xs
+            font-semibold
+            text-gray-600
+            shadow-sm
+            backdrop-blur-xl
+            transition
+            hover:border-pink-200
+            hover:bg-pink-50
+            hover:text-pink-600
+          "
+        >
+          <span
+            className={`
+              rounded-xl
+              px-2.5
+              py-1
+              transition
+              ${
+                i18n.resolvedLanguage === "ko"
+                  ? "bg-pink-500 text-white shadow-sm"
+                  : "text-gray-400 group-hover:text-pink-500"
+              }
+            `}
+          >
+            🇰🇷 KO
+          </span>
+
+          <span
+            className={`
+              rounded-xl
+              px-2.5
+              py-1
+              transition
+              ${
+                i18n.resolvedLanguage === "ja"
+                  ? "bg-indigo-500 text-white shadow-sm"
+                  : "text-gray-400 group-hover:text-indigo-500"
+              }
+            `}
+          >
+            🇯🇵 JP
+          </span>
+        </button>
 
         <div className="relative ml-auto w-full max-w-xs">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="チャンネル検索"
+            placeholder={t("ChannelSearch")}
             className="w-full rounded-2xl border border-gray-200 bg-white/90 px-4 py-2.5 text-sm outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
           />
 
@@ -317,14 +390,20 @@ const Header = () => {
                     {user?.alias}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {user?.role === "ADMIN" ? "Administrator" : "Member"}
+                    {user?.role === "ADMIN"
+                      ? t("Administrator")
+                      : t("Member")}
                   </p>
                 </div>
               </button>
+
               {openMenu === "profile" && (
                 <div className={`${menuPanelClass} right-0 w-64`}>
                   <div className="rounded-2xl bg-gradient-to-r from-pink-50 to-indigo-50 px-4 py-4">
-                    <p className="text-xs text-gray-500">Signed in as</p>
+                    <p className="text-xs text-gray-500">
+                      {t("SignedInAs")}
+                    </p>
+
                     <p className="mt-1 text-base font-semibold text-gray-900">
                       {user?.alias}
                     </p>
@@ -336,7 +415,7 @@ const Header = () => {
                         to="/admin"
                         className="block rounded-xl px-3 py-2.5 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
                       >
-                        管理者ページ
+                        {t("AdminPage")}
                       </Link>
                     )}
 
@@ -344,14 +423,14 @@ const Header = () => {
                       to="/user/edit"
                       className="block rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-pink-50 hover:text-pink-600"
                     >
-                      マイ情報
+                      {t("MyInfo")}
                     </Link>
 
                     <button
                       onClick={handleLogout}
                       className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-500"
                     >
-                      ログアウト
+                      {t("Logout")}
                     </button>
                   </div>
                 </div>
@@ -362,7 +441,7 @@ const Header = () => {
               to="/login"
               className="rounded-2xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-black"
             >
-              ログイン
+              {t("Login")}
             </Link>
           )}
         </div>

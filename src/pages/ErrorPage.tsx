@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type ErrorConfig = {
   label: string;
@@ -14,55 +15,55 @@ type ErrorConfig = {
 // ステータスコードに応じて、画面の文言とカラーテーマを切り替える
 const statusConfig: Record<number, ErrorConfig> = {
   400: {
-    label: "Bad Request",
-    title: "無効なリクエストです",
-    description: "リクエストの形式が正しくないためページを読み込めません。",
-    helper: "入力値やアクセス経路を確認して再度お試しください。",
+    label: "BadRequest",
+    title: "InvalidRequestTitle",
+    description: "InvalidRequestDescription",
+    helper: "InvalidRequestHelper",
     accent: "text-amber-600",
     iconBg: "bg-amber-50",
     iconRing: "ring-amber-100",
   },
   403: {
     label: "Forbidden",
-    title: "アクセスが拒否されました",
-    description: "このページへのアクセス権限がありません。",
-    helper: "ログイン状態または権限設定を確認して再度お試しください。",
+    title: "ForbiddenTitle",
+    description: "ForbiddenDescription",
+    helper: "ForbiddenHelper",
     accent: "text-orange-600",
     iconBg: "bg-orange-50",
     iconRing: "ring-orange-100",
   },
   404: {
-    label: "Not Found",
-    title: "ページが見つかりません",
-    description: "お探しのページは削除されたか、URLが間違っている可能性があります。",
-    helper: "ホームへ移動するか前のページに戻って再度お試しください。",
+    label: "NotFound",
+    title: "NotFoundTitle",
+    description: "NotFoundDescription",
+    helper: "NotFoundHelper",
     accent: "text-pink-600",
     iconBg: "bg-pink-50",
     iconRing: "ring-pink-100",
   },
   408: {
     label: "Timeout",
-    title: "リクエストがタイムアウトしました",
-    description: "サーバー応答が遅延し、リクエストがタイムアウトしました。",
-    helper: "しばらくしてから再試行するかネットワーク状態を確認してください。",
+    title: "TimeoutTitle",
+    description: "TimeoutDescription",
+    helper: "TimeoutHelper",
     accent: "text-sky-600",
     iconBg: "bg-sky-50",
     iconRing: "ring-sky-100",
   },
   410: {
     label: "Gone",
-    title: "ページは削除されました",
-    description: "リクエストされたページはすでに提供されていません。",
-    helper: "関連メニューから最新の経路を再確認してください。",
+    title: "GoneTitle",
+    description: "GoneDescription",
+    helper: "GoneHelper",
     accent: "text-violet-600",
     iconBg: "bg-violet-50",
     iconRing: "ring-violet-100",
   },
   500: {
-    label: "Server Error",
-    title: "サーバーエラーが発生しました",
-    description: "ページ表示中にサーバー内部エラーが発生しました。",
-    helper: "しばらくしてから再度お試しください。問題が続く場合は管理者にお問い合わせください。",
+    label: "ServerError",
+    title: "ServerErrorTitle",
+    description: "ServerErrorDescription",
+    helper: "ServerErrorHelper",
     accent: "text-rose-600",
     iconBg: "bg-rose-50",
     iconRing: "ring-rose-100",
@@ -72,6 +73,8 @@ const statusConfig: Record<number, ErrorConfig> = {
 const ErrorPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { t } = useTranslation();
 
   // エラーページはクエリ文字列（query string）からstatus/messageを受け取り、状況別に表示する
   const params = new URLSearchParams(location.search);
@@ -91,13 +94,15 @@ const ErrorPage: React.FC = () => {
               <p
                 className={`text-xs font-semibold uppercase tracking-[0.2em] ${current.accent}`}
               >
-                {current.label}
+                {t(current.label)}
               </p>
+
               <h1 className="mt-2 text-3xl font-bold text-gray-900">
-                {current.title}
+                {t(current.title)}
               </h1>
+
               <p className="mt-2 text-sm leading-6 text-gray-500">
-                {current.description}
+                {t(current.description)}
               </p>
             </div>
 
@@ -106,14 +111,14 @@ const ErrorPage: React.FC = () => {
               <div className="rounded-2xl bg-gray-50 px-4 py-3 ring-1 ring-gray-100">
                 <p className="text-xs text-gray-500">Status</p>
                 <p className="mt-1 text-xl font-semibold text-gray-900">
-                  {status}
+                  {t("Status")}
                 </p>
               </div>
 
               <div className="rounded-2xl bg-gray-50 px-4 py-3 ring-1 ring-gray-100">
                 <p className="text-xs text-gray-500">Path</p>
                 <p className="mt-1 max-w-[180px] truncate text-sm font-semibold text-gray-900">
-                  {location.pathname}
+                  {t("Path")}
                 </p>
               </div>
             </div>
@@ -131,10 +136,10 @@ const ErrorPage: React.FC = () => {
 
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">
-                  ページを読み込めませんでした
+                  {t("CannotLoadPage")}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-gray-500">
-                  {current.helper}
+                  {t(current.helper)}
                 </p>
 
                 {/* サーバーから詳細なメッセージが渡された場合、追加の案内ボックスを表示する */}
@@ -152,14 +157,14 @@ const ErrorPage: React.FC = () => {
                 onClick={() => navigate("/")}
                 className="flex-1 rounded-2xl bg-pink-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-pink-600"
               >
-                ホームへ戻る
+                {t("GoHome")}
               </button>
 
               <button
                 onClick={() => window.history.back()}
                 className="flex-1 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
               >
-                前のページへ
+                {t("GoBack")}
               </button>
             </div>
           </div>

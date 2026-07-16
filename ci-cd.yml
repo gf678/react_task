@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 소스 받기
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node 설정
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3. 패키지 설치
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. React Build
+      - name: Build React App
+        run: npm run build
+
+      # 5. 빌드 파일 이동
+      - name: Move build files
+        run: |
+          rm -rf /var/www/plug
+          mkdir -p /var/www/plug
+          cp -r dist/* /var/www/plug/
+
+      # 6. 결과물 저장
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-build
+          path: deploy

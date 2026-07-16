@@ -1,0 +1,143 @@
+{
+    "loveibuki": "이부키 사랑해",
+
+  "common": {
+    "loading": "로딩 중...",
+    "anonymous": "익명",
+    "home": "홈으로 돌아가기",
+    "back": "이전 페이지",
+    "list": "목록으로",
+    "save": "저장",
+    "cancel": "취소",
+    "edit": "수정",
+    "delete": "삭제",
+    "search": "검색",
+    "reset": "초기화",
+    "create": "생성",
+    "creating": "생성 중...",
+    "saving": "저장 중..."
+  },
+
+  "channel": {
+    "all": "전체 채널",
+    "none": "채널이 없습니다.",
+    "favorite": "즐겨찾기",
+    "noSubscribed": "구독 중인 채널이 없습니다.",
+    "search": "채널 검색"
+  },
+
+  "auth": {
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃",
+    "id": "아이디",
+    "enterId": "아이디 입력",
+    "password": "비밀번호",
+    "enterPassword": "비밀번호 입력",
+    "email": "이메일",
+    "emailAddress": "이메일 주소",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "createAccount": "계정 만들기"
+  },
+
+  "admin": {
+    "page": "관리자 페이지",
+    "title": "게시판 관리",
+    "description": "게시판 생성, 게시판 정보 수정, 사용자 권한 변경을 한 곳에서 관리합니다.",
+    "boards": "게시판",
+    "users": "사용자",
+    "roleManagement": "사용자 권한 관리",
+    "promote": "승격",
+    "demote": "강등"
+  },
+
+  "home": {
+    "title": "오늘의 게시판",
+    "description": "인기 게시글과 게시판별 최신 흐름을 한눈에 확인할 수 있습니다.",
+    "boards": "게시판",
+    "popular": "인기",
+    "popularPosts": "인기 게시글",
+    "noPopular": "인기 게시글이 없습니다."
+  },
+
+  "board": {
+    "noDescription": "게시판 설명이 없습니다.",
+    "subscribe": "구독하기",
+    "subscribed": "구독 중",
+    "latest": "최신순",
+    "popular": "인기순",
+    "searchPlaceholder": "키워드 검색",
+    "createPost": "게시글 작성",
+    "comments": "댓글",
+    "recommend": "추천",
+    "noPosts": "게시글이 없습니다"
+  },
+
+  "post": {
+    "label": "게시글",
+    "write": "게시글 작성",
+    "edit": "게시글 수정",
+    "title": "제목",
+    "titlePlaceholder": "제목을 입력해주세요",
+    "validation": "제목과 내용을 입력해주세요",
+    "views": "조회수 {{count}}",
+    "likes": "좋아요 {{count}}"
+  },
+
+  "editor": {
+    "bold": "굵게",
+    "italic": "기울임",
+    "heading": "제목",
+    "list": "목록",
+    "code": "코드",
+    "undo": "실행 취소",
+    "redo": "다시 실행",
+    "addFile": "파일 추가",
+    "body": "본문 에디터",
+    "imageDrop": "이미지는 드래그 앤 드롭으로 바로 삽입할 수 있습니다."
+  },
+
+  "comment": {
+    "title": "댓글",
+    "reply": "답글",
+    "write": "댓글 작성",
+    "placeholder": "댓글을 입력하세요",
+    "deleted": "삭제된 댓글입니다.",
+    "save": "저장",
+    "cancel": "취소",
+    "edit": "수정",
+    "delete": "삭제"
+  },
+
+  "profile": {
+    "title": "내 프로필",
+    "description": "닉네임, 프로필 이미지, 연락처 정보를 변경할 수 있습니다.",
+    "nickname": "닉네임",
+    "email": "이메일",
+    "phone": "전화번호",
+    "changeImage": "이미지 변경",
+    "resetImage": "기본 이미지로 변경",
+    "save": "변경 저장"
+  },
+
+  "error": {
+    "badRequest": "잘못된 요청입니다",
+    "forbidden": "접근 권한이 없습니다",
+    "notFound": "페이지를 찾을 수 없습니다",
+    "timeout": "요청 시간이 초과되었습니다",
+    "server": "서버 오류가 발생했습니다",
+    "home": "홈으로 돌아가기"
+  },
+
+  "boardCard": {
+    "posts": "게시글",
+    "likes": "추천",
+    "views": "조회",
+    "firstPost": "첫 번째 글을 작성해보세요!",
+    "more": "더 보기"
+  },
+
+  "postCard": {
+    "unknownBoard": "알 수 없음"
+  }
+}

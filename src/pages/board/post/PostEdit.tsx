@@ -6,6 +6,7 @@ import Image from "@tiptap/extension-image";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight } from "lowlight";
 import api from "../../../api/axios";
+import { useTranslation } from "react-i18next";
 
 // コードブロックのシンタックスハイライトを適用するためのライブラリ
 const lowlight = createLowlight();
@@ -87,7 +88,7 @@ const PostEdit: React.FC = () => {
     id?: string;
   }>();
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const safeBoardName = params.boardName ?? "";
   const postId = params.postId ?? params.id ?? "";
   const isEditMode = Boolean(postId);
@@ -297,23 +298,22 @@ const PostEdit: React.FC = () => {
         : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
     }`;
 
-  const pageTitle = "投稿を編集する";
-  const helperText = "自由に編集してみてください。";
-  const submitLabel = loading ? "編集中..." : "編集する";
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-sky-50 px-4 py-10">
       <div className="mx-auto max-w-5xl rounded-3xl border border-white/70 bg-white/90 shadow-sm backdrop-blur">
         <div className="border-b border-gray-100 px-6 py-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-500">
-            {isEditMode ? "Edit Post" : "Write Post"}
+            {isEditMode ? t("post.editPost") : t("post.writePost")}
           </p>
+
           <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {safeBoardName} {pageTitle}
+                {safeBoardName} {t("post.editTitle")}
               </h1>
-              <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+              <p className="mt-1 text-sm text-gray-500">
+                {t("post.editHelper")}
+              </p>
             </div>
 
             <button
@@ -321,7 +321,7 @@ const PostEdit: React.FC = () => {
               onClick={() => navigate(`/board/${safeBoardName}/list`)}
               className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
             >
-              一覧へ
+              {t("common.list")}
             </button>
           </div>
         </div>
@@ -337,73 +337,85 @@ const PostEdit: React.FC = () => {
 
           <div className="px-6 pb-4 pt-6">
             <label className="mb-2 block text-sm font-medium text-gray-700">
-              タイトル
+              {t("post.title")}
             </label>
+
             <input
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
                 setFormError("");
               }}
-              placeholder="タイトルを入力してください"
+              placeholder={t("post.titlePlaceholder")}
               className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-lg font-semibold outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
             />
           </div>
 
-          {/* ツールバーエリア */}
           <div className="border-y border-gray-100 bg-gray-50/70 px-6 py-4">
             <div className="flex flex-wrap items-center gap-2">
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={toolButton(editor.isActive("bold"))}
               >
-                Bold
+                {t("editor.bold")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={toolButton(editor.isActive("italic"))}
               >
-                Italic
+                {t("editor.italic")}
               </button>
+
               <button
                 type="button"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                className={toolButton(editor.isActive("heading", { level: 2 }))}
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 2 }).run()
+                }
+                className={toolButton(
+                  editor.isActive("heading", { level: 2 }),
+                )}
               >
-                H2
+                {t("editor.heading")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={toolButton(editor.isActive("bulletList"))}
               >
-                List
+                {t("editor.list")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                 className={toolButton(editor.isActive("codeBlock"))}
               >
-                Code
+                {t("editor.code")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().undo().run()}
                 className={toolButton()}
               >
-                Undo
+                {t("editor.undo")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().redo().run()}
                 className={toolButton()}
               >
-                Redo
+                {t("editor.redo")}
               </button>
+
               <label className={toolButton()}>
-                ファイルを追加
+                {t("editor.addFile")}
                 <input
                   type="file"
                   hidden
@@ -414,7 +426,6 @@ const PostEdit: React.FC = () => {
             </div>
           </div>
 
-          {/* エディタ本体 */}
           <div className="px-6 py-5">
             <div
               onDrop={handleDrop}
@@ -427,22 +438,24 @@ const PostEdit: React.FC = () => {
               }`}
             >
               <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3 text-xs text-gray-400">
-                <span>本文エディタ</span>
-                <span>画像はドラッグ＆ドロップでそのまま挿入できます。</span>
+                <span>{t("editor.body")}</span>
+                <span>{t("editor.imageDrop")}</span>
               </div>
+
               <EditorContent editor={editor} />
             </div>
           </div>
 
-          {/* 添付ファイルリスト表示 */}
           {(existingAttachments.length > 0 || attachments.length > 0) && (
             <div className="px-6 pb-6">
               <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+
                 {existingAttachments.length > 0 && (
                   <>
                     <div className="mb-3 text-sm font-semibold text-gray-800">
-                      既存の添付ファイル
+                      {t("attachment.existing")}
                     </div>
+
                     <div className="mb-4 flex flex-wrap gap-2">
                       {existingAttachments.map((file, idx) =>
                         file.url ? (
@@ -471,8 +484,9 @@ const PostEdit: React.FC = () => {
                 {attachments.length > 0 && (
                   <>
                     <div className="mb-3 text-sm font-semibold text-gray-800">
-                      新しい添付ファイル
+                      {t("attachment.new")}
                     </div>
+
                     <div className="flex flex-wrap gap-2">
                       {attachments.map((file, idx) => (
                         <div
@@ -482,6 +496,7 @@ const PostEdit: React.FC = () => {
                           <span className="max-w-[220px] truncate">
                             {file.name}
                           </span>
+
                           <button
                             type="button"
                             onClick={() => removeAttachment(idx)}
@@ -494,29 +509,31 @@ const PostEdit: React.FC = () => {
                     </div>
                   </>
                 )}
+
               </div>
             </div>
           )}
 
-          {/* フッターアクション */}
           <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/70 px-6 py-5">
             <p className="text-sm text-gray-400">
-              編集後は掲示板の一覧へ移動します。
+              {t("post.afterEdit")}
             </p>
+
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => navigate(`/board/${safeBoardName}/list`)}
                 className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-200 transition hover:bg-gray-50"
               >
-                キャンセル
+                {t("common.cancel")}
               </button>
+
               <button
                 type="submit"
                 disabled={loading}
                 className="rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {submitLabel}
+                {loading ? t("post.editing") : t("post.edit")}
               </button>
             </div>
           </div>

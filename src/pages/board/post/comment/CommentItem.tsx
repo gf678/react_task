@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../../../api/axios";
 import { normalizeProfileImg } from "../../../../utils/profileImage";
 import type { CommentData, CurrentUser, UserRole } from "./CommentTypes";
+import { useTranslation } from "react-i18next";
 
 // 権限レベルの定義: USER < MANAGER < ADMIN
 const ROLE_LEVEL: Record<UserRole, number> = {
@@ -99,11 +100,10 @@ const CommentItem = ({
       setLoading(false);
     }
   };
-
+  const { t } = useTranslation();
   // レンダリング: 削除済みコメントの処理や、権限に応じたUIの切り替えを含む
   return (
     <div className="relative" style={{ marginLeft: indent }}>
-      {/* 返信時のツリー構造を示すインジケーター */}
       {depth > 0 && (
         <>
           <div className="absolute -left-3 top-0 h-full w-px bg-gradient-to-b from-pink-200 via-pink-100 to-transparent" />
@@ -121,7 +121,6 @@ const CommentItem = ({
         }`}
       >
         <div className="flex items-start gap-3">
-          {/* プロフィール画像表示 */}
           {comment.user?.profileImg ? (
             <img
               src={normalizeProfileImg(comment.user.profileImg)}
@@ -142,7 +141,7 @@ const CommentItem = ({
 
               {depth > 0 && (
                 <span className="rounded-full bg-pink-100 px-2 py-0.5 text-[11px] font-semibold text-pink-600">
-                  ↳ リプライ
+                  ↳ {t("comment.reply")}
                 </span>
               )}
 
@@ -151,10 +150,9 @@ const CommentItem = ({
               </span>
             </div>
 
-            {/* コメント本文または編集フォーム */}
             {comment.isDeleted ? (
               <div className="mt-2 rounded-xl bg-white/70 px-3 py-3 text-sm italic text-gray-400">
-                削除されたコメントです。
+                {t("comment.deleted")}
               </div>
             ) : editing ? (
               <div className="mt-3">
@@ -171,14 +169,15 @@ const CommentItem = ({
                     disabled={loading}
                     className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-medium text-white transition hover:bg-black disabled:opacity-50"
                   >
-                    保存
+                    {t("common.save")}
                   </button>
+
                   <button
                     onClick={() => setEditing(false)}
                     disabled={loading}
                     className="rounded-xl bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-200 disabled:opacity-50"
                   >
-                    キャンセル
+                    {t("common.cancel")}
                   </button>
                 </div>
               </div>
@@ -188,14 +187,13 @@ const CommentItem = ({
               </div>
             )}
 
-            {/* 操作ボタン群 (返信/編集/削除) */}
             {!comment.isDeleted && !editing && (
               <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
                 <button
                   onClick={() => setParentId(comment.commentId)}
                   className="rounded-lg px-2.5 py-1.5 font-medium text-gray-500 transition hover:bg-pink-50 hover:text-pink-600"
                 >
-                  リプライ
+                  {t("comment.reply")}
                 </button>
 
                 {canEdit && (
@@ -203,7 +201,7 @@ const CommentItem = ({
                     onClick={() => setEditing(true)}
                     className="rounded-lg px-2.5 py-1.5 font-medium text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600"
                   >
-                    編集
+                    {t("common.edit")}
                   </button>
                 )}
 
@@ -213,7 +211,7 @@ const CommentItem = ({
                     disabled={loading}
                     className="rounded-lg px-2.5 py-1.5 font-medium text-gray-500 transition hover:bg-red-50 hover:text-red-500 disabled:opacity-50"
                   >
-                    削除
+                    {t("common.delete")}
                   </button>
                 )}
               </div>

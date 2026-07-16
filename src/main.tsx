@@ -4,8 +4,11 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 import "./index.css";
+import "./i18n/i18n.tsx";
+
 import App from "./App.tsx";
 import { store } from "./store";
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

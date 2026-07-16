@@ -1,0 +1,205 @@
+{
+  "loveibuki": "イブキ大好き",
+
+  "common": {
+    "loading": "読み込み中...",
+    "saving": "保存中...",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "search": "検索",
+    "reset": "リセット",
+    "creating": "作成中...",
+    "anonymous": "匿名",
+    "home": "ホームへ戻る",
+    "back": "前のページへ",
+    "list": "一覧へ",
+    "edit": "編集",
+    "delete": "削除",
+    "submit": "投稿",
+    "success": "情報を更新しました。",
+    "error": "情報の更新に失敗しました。"
+  },
+
+  "navigation": {
+    "allChannel": "全体チャンネル",
+    "noChannels": "チャンネルがありません。",
+    "favorite": "お気に入り",
+    "noSubscribedChannels": "購読中のチャンネルはありません。",
+    "channelSearch": "チャンネル検索",
+    "administrator": "管理者",
+    "member": "メンバー",
+    "signedInAs": "ログインユーザー",
+    "adminPage": "管理者ページ",
+    "myInfo": "マイ情報",
+    "logout": "ログアウト",
+    "login": "ログイン"
+  },
+
+  "admin": {
+    "boardManagement": "掲示板管理",
+    "description": "掲示板の作成、掲示板情報の編集、ユーザー権限の変更を一括で管理します。",
+    "boards": "掲示板",
+    "users": "ユーザー",
+    "home": "ホームへ",
+
+    "createBoard": "掲示板作成",
+    "createDescription": "新しい掲示板の名前と説明を入力して作成できます。",
+    "boardName": "掲示板名",
+    "descriptionLabel": "説明",
+    "create": "作成",
+    "edit": "編集",
+    "save": "保存",
+    "noBoards": "掲示板がありません",
+
+    "userRole": "ユーザー権限管理",
+    "userDescription": "loginIdでユーザーを検索し、権限を変更できます。",
+    "userSearch": "ユーザーID検索",
+    "searching": "検索中...",
+    "nickname": "ニックネーム",
+    "role": "権限",
+    "promote": "昇格",
+    "demote": "降格",
+    "noUsers": "ユーザーがいません"
+  },
+
+  "auth": {
+    "register": "登録",
+    "createAccount": "アカウント作成",
+    "resetPassword": "パスワード再設定",
+    "id": "ID",
+    "enterId": "IDを入力",
+    "password": "パスワード",
+    "enterPassword": "パスワードを入力",
+    "email": "メール",
+    "emailAddress": "メールアドレス",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "sendEmail": "メールを送信",
+    "backLogin": "ログイン画面に戻る"
+  },
+
+  "home": {
+    "title": "今日の掲示板",
+    "description": "人気投稿と掲示板別の最新の流れを一度に確認できるホーム画面です。",
+    "boards": "掲示板",
+    "popular": "人気",
+    "popularPosts": "人気投稿",
+    "noPopular": "人気投稿がありません。",
+    "boardDescription": "掲示板ごとの最新投稿を素早く確認できます。"
+  },
+
+  "login": {
+    "title": "ログイン",
+    "signup": "登録",
+    "signin": "ログイン",
+    "alias": "ニックネーム",
+    "createAccount": "アカウント作成",
+    "already": "すでにアカウントをお持ちですか？",
+    "newUser": "初めてですか？"
+  },
+
+  "resetPassword": {
+    "title": "新しいパスワードの設定",
+    "input": "新しいパスワード",
+    "change": "パスワードを変更",
+    "changing": "変更中...",
+    "success": "パスワードが変更されました。",
+    "invalid": "有効なトークンと新しいパスワードを入力してください。",
+    "failed": "パスワードの変更に失敗しました。"
+  },
+
+  "profile": {
+    "title": "マイプロフィール",
+    "description": "ニックネーム、プロフィール画像、連絡先情報を変更できます。",
+    "nickname": "ニックネーム",
+    "nicknamePlaceholder": "ニックネームを入力",
+    "email": "メールアドレス",
+    "phone": "電話番号",
+    "save": "変更を保存",
+    "saving": "保存中...",
+    "noAlias": "ニックネーム未設定",
+    "noEmail": "メールアドレス未登録"
+  },
+
+  "error": {
+    "badRequest": "無効なリクエストです",
+    "forbidden": "アクセスが拒否されました",
+    "notFound": "ページが見つかりません",
+    "timeout": "リクエストがタイムアウトしました",
+    "server": "サーバーエラーが発生しました",
+    "home": "ホームへ戻る"
+  },
+
+  "comment": {
+    "title": "コメント",
+    "reply": "返信",
+    "deleted": "削除されたコメントです。",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "edit": "編集",
+    "delete": "削除",
+    "empty": "コメント内容を入力してください。",
+    "write": "コメントを書く",
+    "placeholder": "コメントを入力してください"
+  },
+
+  "post": {
+    "label": "投稿",
+    "views": "閲覧数 {{count}}",
+    "likes": "いいね {{count}}",
+
+    "editTitle": "投稿を編集する",
+    "editHelper": "自由に編集してみてください。",
+    "editPost": "Edit Post",
+    "writePost": "Write Post",
+    "edit": "編集する",
+    "editing": "編集中...",
+    "title": "タイトル",
+    "titlePlaceholder": "タイトルを入力してください",
+    "validation": "タイトルと内容を入力してください",
+    "afterEdit": "編集後は掲示板の一覧へ移動します。"
+  },
+
+  "editor": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "heading": "H2",
+    "list": "List",
+    "code": "Code",
+    "undo": "Undo",
+    "redo": "Redo",
+    "addFile": "ファイルを追加",
+    "body": "本文エディタ",
+    "imageDrop": "画像はドラッグ＆ドロップでそのまま挿入できます。"
+  },
+
+  "attachment": {
+    "existing": "既存の添付ファイル",
+    "new": "新しい添付ファイル"
+  },
+
+  "board": {
+    "noDescription": "掲示板の説明がありません。",
+    "subscribed": "購読中",
+    "subscribe": "購読する",
+    "latest": "最新順",
+    "popular": "人気順",
+    "searchPlaceholder": "キーワード検索",
+    "createPost": "投稿作成",
+    "comments": "コメント",
+    "recommend": "おすすめ",
+    "noPosts": "投稿がありません"
+  },
+
+  "boardCard": {
+    "posts": "投稿",
+    "anonymous": "匿名",
+    "likes": "おすすめ",
+    "views": "閲覧",
+    "firstPost": "最初の投稿をしてみましょう！",
+    "more": "もっと見る"
+  },
+
+  "postCard": {
+    "unknownBoard": "不明"
+  }
+}

@@ -6,6 +6,7 @@ import Image from "@tiptap/extension-image";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight } from "lowlight";
 import api from "../../../api/axios";
+import { useTranslation } from "react-i18next";
 
 // コードブロックのシンタックスハイライトを適用するための lowlight インスタンス作成
 const lowlight = createLowlight();
@@ -24,6 +25,8 @@ const PostWrite: React.FC = () => {
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [formError, setFormError] = useState("");
+
+  const { t } = useTranslation();
 
   // boardName が undefined の場合のフォールバック
   const safeBoardName = boardName ?? "";
@@ -190,18 +193,20 @@ const PostWrite: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-sky-50 px-4 py-10">
       <div className="mx-auto max-w-5xl rounded-3xl border border-white/70 bg-white/90 shadow-sm backdrop-blur">
-        {/* ヘッダーエリア */}
+
         <div className="border-b border-gray-100 px-6 py-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-500">
-            Write Post
+            {t("post.writePost")}
           </p>
+
           <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {safeBoardName} 投稿する
+                {safeBoardName} {t("post.writeTitle")}
               </h1>
+
               <p className="mt-1 text-sm text-gray-500">
-                テキスト・画像・添付ファイルを投稿できます。
+                {t("post.writeHelper")}
               </p>
             </div>
 
@@ -210,13 +215,13 @@ const PostWrite: React.FC = () => {
               onClick={() => navigate(`/board/${safeBoardName}/list`)}
               className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
             >
-              一覧へ
+              {t("common.list")}
             </button>
           </div>
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* エラーメッセージ表示 */}
+
           {formError && (
             <div className="px-6 pt-6">
               <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -225,76 +230,86 @@ const PostWrite: React.FC = () => {
             </div>
           )}
 
-          {/* タイトル入力 */}
           <div className="px-6 pb-4 pt-6">
             <label className="mb-2 block text-sm font-medium text-gray-700">
-              タイトル
+              {t("post.title")}
             </label>
+
             <input
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
                 setFormError("");
               }}
-              placeholder="タイトルを入力してください。"
+              placeholder={t("post.titlePlaceholder")}
               className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-lg font-semibold outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
             />
           </div>
 
-          {/* ツールバー */}
+
           <div className="border-y border-gray-100 bg-gray-50/70 px-6 py-4">
             <div className="flex flex-wrap items-center gap-2">
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={toolButton(editor.isActive("bold"))}
               >
-                Bold
+                {t("editor.bold")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={toolButton(editor.isActive("italic"))}
               >
-                Italic
+                {t("editor.italic")}
               </button>
+
               <button
                 type="button"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 2 }).run()
+                }
                 className={toolButton(editor.isActive("heading", { level: 2 }))}
               >
-                H2
+                {t("editor.heading")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={toolButton(editor.isActive("bulletList"))}
               >
-                List
+                {t("editor.list")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                 className={toolButton(editor.isActive("codeBlock"))}
               >
-                Code
+                {t("editor.code")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().undo().run()}
                 className={toolButton()}
               >
-                Undo
+                {t("editor.undo")}
               </button>
+
               <button
                 type="button"
                 onClick={() => editor.chain().focus().redo().run()}
                 className={toolButton()}
               >
-                Redo
+                {t("editor.redo")}
               </button>
+
               <label className={toolButton()}>
-                ファイルを追加
+                {t("editor.addFile")}
                 <input
                   type="file"
                   hidden
@@ -302,10 +317,11 @@ const PostWrite: React.FC = () => {
                   onChange={(e) => handleFileAttach(e.target.files)}
                 />
               </label>
+
             </div>
           </div>
 
-          {/* エディタエリア */}
+
           <div className="px-6 py-5">
             <div
               onDrop={handleDrop}
@@ -318,27 +334,33 @@ const PostWrite: React.FC = () => {
               }`}
             >
               <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3 text-xs text-gray-400">
-                <span>本文エディタ</span>
-                <span>画像はドラッグ＆ドロップで挿입できます。</span>
+                <span>{t("editor.body")}</span>
+                <span>{t("editor.imageDrop")}</span>
               </div>
+
               <EditorContent editor={editor} />
             </div>
           </div>
 
-          {/* 添付ファイルリスト */}
+
           {attachments.length > 0 && (
             <div className="px-6 pb-6">
               <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4">
+
                 <div className="mb-3 text-sm font-semibold text-gray-800">
-                  添付ファイル
+                  {t("attachment.list")}
                 </div>
+
                 <div className="flex flex-wrap gap-2">
                   {attachments.map((file, idx) => (
                     <div
                       key={`${file.name}-${idx}`}
                       className="flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm text-gray-700 ring-1 ring-gray-200"
                     >
-                      <span className="max-w-[220px] truncate">{file.name}</span>
+                      <span className="max-w-[220px] truncate">
+                        {file.name}
+                      </span>
+
                       <button
                         type="button"
                         onClick={() => removeAttachment(idx)}
@@ -349,32 +371,38 @@ const PostWrite: React.FC = () => {
                     </div>
                   ))}
                 </div>
+
               </div>
             </div>
           )}
 
-          {/* フッターアクション */}
+
           <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/70 px-6 py-5">
             <p className="text-sm text-gray-400">
-              投稿後は掲示板の一覧へ移動します。
+              {t("post.afterWrite")}
             </p>
+
             <div className="flex items-center gap-3">
+
               <button
                 type="button"
                 onClick={() => navigate(`/board/${safeBoardName}/list`)}
                 className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-200 transition hover:bg-gray-50"
               >
-                キャンセル
+                {t("common.cancel")}
               </button>
+
               <button
                 type="submit"
                 disabled={loading}
                 className="rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {loading ? "投稿中..." : "投稿する"}
+                {loading ? t("post.posting") : t("post.submit")}
               </button>
+
             </div>
           </div>
+
         </form>
       </div>
     </div>

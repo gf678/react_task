@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
+import { useTranslation } from "react-i18next";
 
 const ResetPassword = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
+
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -15,7 +19,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (!token || !password.trim()) {
-      setMessage("有効なトークンと新しいパスワードを入力してください。");
+      setMessage(t("resetPassword.invalid"));
       return;
     }
 
@@ -28,29 +32,36 @@ const ResetPassword = () => {
         password: password.trim(),
       });
 
-      alert("パスワードが変更されました。");
+      alert(t("resetPassword.success"));
+
       navigate("/login", { replace: true });
+
     } catch (err: any) {
-      const nextMessage =
-         "パスワードの変更に失敗しました。";
-      setMessage(nextMessage);
+      setMessage(t("resetPassword.failed"));
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
     <div className="mx-auto mt-20 max-w-md rounded-2xl bg-white p-6 shadow">
-      <h1 className="text-2xl font-bold">新しいパスワードの設定</h1>
+
+      <h1 className="text-2xl font-bold">
+        {t("resetPassword.title")}
+      </h1>
+
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="新しいパスワード"
+          placeholder={t("resetPassword.placeholder")}
           className="w-full rounded-xl border px-4 py-3"
         />
+
 
         {message && (
           <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -58,14 +69,19 @@ const ResetPassword = () => {
           </div>
         )}
 
+
         <button
           type="submit"
           disabled={loading}
           className="w-full rounded-xl bg-gray-900 px-4 py-3 text-white"
         >
-          {loading ? "変更中..." : "パスワードを変更"}
+          {loading
+            ? t("resetPassword.changing")
+            : t("resetPassword.submit")}
         </button>
+
       </form>
+
     </div>
   );
 };

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 // axios 기반 API 모듈
 import api from "../api/axios";
 
+import { useTranslation } from "react-i18next";
+
 // 게시판 타입 정의
 interface Board {
   boardId: number;
@@ -47,6 +49,8 @@ const AdminPage = () => {
   const [savingBoardId, setSavingBoardId] = useState<number | null>(null);
   // 유저 권한 변경 중 ID
   const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
+
+  const { t } = useTranslation();
 
   // 새 게시판 입력 상태
   const [newBoard, setNewBoard] = useState({
@@ -228,25 +232,26 @@ const AdminPage = () => {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-500">
                 Admin Console
               </p>
+
               <h1 className="mt-2 text-3xl font-bold text-gray-900">
-                掲示板管理
+                {t("BoardManagement")}
               </h1>
+
               <p className="mt-2 text-sm text-gray-500">
-                掲示板の作成、掲示板情報の編集、ユーザー権限の変更を一括で管理します。
+                {t("AdminDescription")}
               </p>
             </div>
 
-            {/* 통계 + 홈 버튼 */}
             <div className="flex flex-wrap gap-3">
               <div className="rounded-2xl bg-gray-50 px-4 py-3 ring-1 ring-gray-100">
-                <p className="text-xs text-gray-500">Boards</p>
+                <p className="text-xs text-gray-500">{t("Boards")}</p>
                 <p className="mt-1 text-xl font-semibold text-gray-900">
                   {boards.length}
                 </p>
               </div>
 
               <div className="rounded-2xl bg-gray-50 px-4 py-3 ring-1 ring-gray-100">
-                <p className="text-xs text-gray-500">Users</p>
+                <p className="text-xs text-gray-500">{t("Users")}</p>
                 <p className="mt-1 text-xl font-semibold text-gray-900">
                   {users.length}
                 </p>
@@ -256,25 +261,28 @@ const AdminPage = () => {
                 onClick={() => navigate("/")}
                 className="rounded-2xl bg-gray-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-black"
               >
-                ホームへ
+                {t("Home")}
               </button>
             </div>
           </div>
         </section>
 
-        {/* 게시판 생성 영역 */}
+
+        {/* 게시판 생성 */}
         <section className="rounded-3xl border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="mb-5">
-            <h2 className="text-lg font-semibold text-gray-900">掲示板作成</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {t("CreateBoard")}
+            </h2>
+
             <p className="mt-1 text-sm text-gray-500">
-              新しい掲示板の名前と説明を入力して、そのまま作成できます。
+              {t("CreateBoardDescription")}
             </p>
           </div>
 
-          {/* 입력 폼 */}
           <div className="grid gap-3 md:grid-cols-[1fr_1.4fr_auto]">
             <input
-              placeholder="掲示板名"
+              placeholder={t("BoardName")}
               value={newBoard.name}
               onChange={(e) =>
                 setNewBoard({ ...newBoard, name: e.target.value })
@@ -283,7 +291,7 @@ const AdminPage = () => {
             />
 
             <input
-              placeholder="説明"
+              placeholder={t("Description")}
               value={newBoard.description}
               onChange={(e) =>
                 setNewBoard({
@@ -299,29 +307,43 @@ const AdminPage = () => {
               disabled={creating}
               className="rounded-xl bg-pink-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-pink-600 disabled:opacity-50"
             >
-              {creating ? "作成中..." : "作成"}
+              {creating ? t("Creating") : t("Create")}
             </button>
           </div>
         </section>
 
+
         {/* 게시판 목록 */}
         <section className="rounded-3xl border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="mb-5">
-            <h2 className="text-lg font-semibold text-gray-900">掲示板一覧</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {t("BoardList")}
+            </h2>
+
             <p className="mt-1 text-sm text-gray-500">
-              既存の掲示板の名前と説明をそのまま編集できます。
+              {t("EditBoardDescription")}
             </p>
           </div>
 
-          {/* 테이블 */}
           <div className="overflow-x-auto rounded-2xl border border-gray-100">
             <table className="min-w-full divide-y divide-gray-100 text-sm">
               <thead className="bg-gray-50 text-gray-600">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium">ID</th>
-                  <th className="px-4 py-3 text-left font-medium">名前</th>
-                  <th className="px-4 py-3 text-left font-medium">説明</th>
-                  <th className="px-4 py-3 text-right font-medium">操作</th>
+                  <th className="px-4 py-3 text-left font-medium">
+                    ID
+                  </th>
+
+                  <th className="px-4 py-3 text-left font-medium">
+                    {t("Name")}
+                  </th>
+
+                  <th className="px-4 py-3 text-left font-medium">
+                    {t("Description")}
+                  </th>
+
+                  <th className="px-4 py-3 text-right font-medium">
+                    {t("Action")}
+                  </th>
                 </tr>
               </thead>
 
@@ -331,7 +353,9 @@ const AdminPage = () => {
 
                   return (
                     <tr key={board.boardId} className="align-top">
-                      <td className="px-4 py-4 text-gray-500">{board.boardId}</td>
+                      <td className="px-4 py-4 text-gray-500">
+                        {board.boardId}
+                      </td>
 
                       <td className="px-4 py-4">
                         {isEditing ? (
@@ -343,7 +367,7 @@ const AdminPage = () => {
                                 name: e.target.value,
                               }))
                             }
-                            className="w-full rounded-xl border border-gray-200 px-3 py-2 outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
+                            className="w-full rounded-xl border border-gray-200 px-3 py-2"
                           />
                         ) : (
                           <span className="font-medium text-gray-900">
@@ -363,7 +387,7 @@ const AdminPage = () => {
                               }))
                             }
                             rows={3}
-                            className="w-full rounded-xl border border-gray-200 px-3 py-2 outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
+                            className="w-full rounded-xl border border-gray-200 px-3 py-2"
                           />
                         ) : (
                           <span className="text-gray-600">
@@ -379,24 +403,26 @@ const AdminPage = () => {
                               <button
                                 onClick={() => saveBoard(board.boardId)}
                                 disabled={savingBoardId === board.boardId}
-                                className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-black disabled:opacity-50"
+                                className="rounded-xl bg-gray-900 px-3 py-2 text-xs text-white"
                               >
-                                {savingBoardId === board.boardId ? "保存中..." : "保存"}
+                                {savingBoardId === board.boardId
+                                  ? t("Saving")
+                                  : t("Save")}
                               </button>
 
                               <button
                                 onClick={cancelEditBoard}
-                                className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-200"
+                                className="rounded-xl bg-gray-100 px-3 py-2 text-xs"
                               >
-                                キャンセル
+                                {t("Cancel")}
                               </button>
                             </>
                           ) : (
                             <button
                               onClick={() => startEditBoard(board)}
-                              className="rounded-xl bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-600 transition hover:bg-indigo-100"
+                              className="rounded-xl bg-indigo-50 px-3 py-2 text-xs text-indigo-600"
                             >
-                              編集
+                              {t("Edit")}
                             </button>
                           )}
                         </div>
@@ -405,11 +431,13 @@ const AdminPage = () => {
                   );
                 })}
 
-                {/* 게시판 없을 때 */}
                 {boards.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-10 text-center text-gray-400">
-                      掲示板がありません
+                    <td
+                      colSpan={4}
+                      className="px-4 py-10 text-center text-gray-400"
+                    >
+                      {t("NoBoards")}
                     </td>
                   </tr>
                 )}
@@ -418,30 +446,33 @@ const AdminPage = () => {
           </div>
         </section>
 
+
         {/* 유저 권한 관리 */}
         <section className="rounded-3xl border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="mb-5">
-            <h2 className="text-lg font-semibold text-gray-900">유저 권한 관리</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {t("UserRoleManagement")}
+            </h2>
+
             <p className="mt-1 text-sm text-gray-500">
-              loginIdでユーザーを検索し、権限を変更できます。
+              {t("UserRoleDescription")}
             </p>
           </div>
 
-          {/* 검색 영역 */}
           <div className="mb-5 flex flex-col gap-3 md:flex-row">
             <input
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
-              placeholder="ユーザーID検索"
-              className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
+              placeholder={t("UserSearch")}
+              className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
             />
 
             <button
               onClick={searchUser}
               disabled={searching}
-              className="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600 disabled:opacity-50"
+              className="rounded-xl bg-emerald-500 px-5 py-3 text-white"
             >
-              {searching ? "検索中..." : "検索"}
+              {searching ? t("Searching") : t("Search")}
             </button>
 
             <button
@@ -449,77 +480,68 @@ const AdminPage = () => {
                 setSearchId("");
                 void fetchData();
               }}
-              className="rounded-xl bg-gray-100 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
+              className="rounded-xl bg-gray-100 px-5 py-3"
             >
-              リセット
+              {t("Reset")}
             </button>
           </div>
 
-          {/* ユーザーテーブル */}
+
           <div className="overflow-x-auto rounded-2xl border border-gray-100">
             <table className="min-w-full divide-y divide-gray-100 text-sm">
               <thead className="bg-gray-50 text-gray-600">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium">ID</th>
-                  <th className="px-4 py-3 text-left font-medium">ニックネーム</th>
-                  <th className="px-4 py-3 text-left font-medium">権限</th>
-                  <th className="px-4 py-3 text-right font-medium">変更</th>
+                  <th className="px-4 py-3 text-left">ID</th>
+                  <th className="px-4 py-3 text-left">{t("Nickname")}</th>
+                  <th className="px-4 py-3 text-left">{t("Role")}</th>
+                  <th className="px-4 py-3 text-right">{t("Change")}</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-gray-100 bg-white">
                 {users.map((user) => (
                   <tr key={user.id}>
-                    <td className="px-4 py-4 text-gray-700">{user.loginId}</td>
+                    <td className="px-4 py-4">
+                      {user.loginId}
+                    </td>
 
-                    <td className="px-4 py-4 font-medium text-gray-900">
+                    <td className="px-4 py-4 font-medium">
                       {user.alias}
                     </td>
 
                     <td className="px-4 py-4">
-                      {/* 権限バッジ */}
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${roleBadgeClass(
-                          user.role
-                        )}`}
-                      >
-                        {user.role}
-                      </span>
+                      {user.role}
                     </td>
 
                     <td className="px-4 py-4">
-                      <div className="flex justify-end gap-2">
-                        {/* USER → MODERATOR */}
-                        {user.role === "USER" && (
-                          <button
-                            onClick={() => updateRole(user.id, "MODERATOR")}
-                            disabled={updatingUserId === user.id}
-                            className="rounded-xl bg-indigo-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-indigo-600 disabled:opacity-50"
-                          >
-                            昇格
-                          </button>
-                        )}
+                      {user.role === "USER" && (
+                        <button
+                          onClick={() => updateRole(user.id, "MODERATOR")}
+                          className="rounded-xl bg-indigo-500 px-3 py-2 text-xs text-white"
+                        >
+                          {t("Promote")}
+                        </button>
+                      )}
 
-                        {/* MODERATOR → USER */}
-                        {user.role === "MODERATOR" && (
-                          <button
-                            onClick={() => updateRole(user.id, "USER")}
-                            disabled={updatingUserId === user.id}
-                            className="rounded-xl bg-red-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-red-600 disabled:opacity-50"
-                          >
-                            降格
-                          </button>
-                        )}
-                      </div>
+                      {user.role === "MODERATOR" && (
+                        <button
+                          onClick={() => updateRole(user.id, "USER")}
+                          className="rounded-xl bg-red-500 px-3 py-2 text-xs text-white"
+                        >
+                          {t("Demote")}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
 
-                {/* ユーザーなし */}
                 {users.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-4 py-10 text-center text-gray-400">
-                      ユーザーがいません
+                    <td
+                      colSpan={4}
+                      className="px-4 py-10 text-center text-gray-400"
+                    >
+                      {t("NoUsers")}
                     </td>
                   </tr>
                 )}

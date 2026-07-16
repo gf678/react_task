@@ -19,7 +19,7 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Auth />} />
-
+      
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/board/:boardName/list" element={<BoardContainer />} />
