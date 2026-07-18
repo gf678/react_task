@@ -18,14 +18,10 @@ const hasValidAccess = (key: string) => {
 
   if (!value) return false;
 
-  if (value === "true") {
-    return true;
-  }
-
   try {
     const parsed = JSON.parse(value);
 
-    if (Date.now() > parsed.expiresAt) {
+    if (!parsed.expiresAt || Date.now() > parsed.expiresAt) {
       sessionStorage.removeItem(key);
       return false;
     }
@@ -54,7 +50,8 @@ const BoardCard: React.FC<Props> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const listPath = `/board/${boardTitle}/list`;
+  const encodedBoardTitle = encodeURIComponent(boardTitle);
+  const listPath = `/board/${encodedBoardTitle}/list`;
 
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -77,7 +74,12 @@ const BoardCard: React.FC<Props> = ({
   };
 
   const openProtectedPath = (path: string) => {
-    if (!isProtected || hasBoardAccess()) {
+    if (!isProtected) {
+      navigate(path);
+      return;
+    }
+
+    if (hasBoardAccess()) {
       navigate(path);
       return;
     }
@@ -134,15 +136,15 @@ const BoardCard: React.FC<Props> = ({
       <ul className="divide-y divide-gray-100">
         {posts.length > 0 ? (
           posts.slice(0, 5).map((post) => {
-            const postPath = `/board/${boardTitle}/post/${post.postId}`;
+            const postPath = `/board/${encodedBoardTitle}/post/${post.postId}`;
 
             return (
               <li key={post.postId}>
                 <Link
                   to={postPath}
-                  onClick={(e) => {
+                  onClick={(event) => {
                     if (isProtected && !hasBoardAccess()) {
-                      e.preventDefault();
+                      event.preventDefault();
                       setNextPath(postPath);
                       setShowPassword(true);
                     }
@@ -208,8 +210,8 @@ const BoardCard: React.FC<Props> = ({
       {showPassword && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
+            onSubmit={(event) => {
+              event.preventDefault();
               void checkPassword();
             }}
             className="rounded-2xl bg-white p-6 shadow-xl"
@@ -219,7 +221,7 @@ const BoardCard: React.FC<Props> = ({
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
               className="mb-4 rounded-xl border px-3 py-2"
               placeholder="Password"
               autoFocus

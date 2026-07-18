@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import {  useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import type { FormEvent, JSX } from "react";
 import api from "../api/axios";
 
@@ -8,31 +8,33 @@ interface Props {
 }
 
 interface Board {
-  boardId?: number;
   id?: number;
-  boardTitle?: string;
-  boardName?: string;
-  title?: string;
+  boardId?: number;
   name?: string;
+  boardName?: string;
+  boardTitle?: string;
+  title?: string;
   isProtected?: boolean;
   protected?: boolean;
 }
 
 const ACCESS_DURATION = 60 * 60 * 1000;
 
+const getBoards = (data: any): Board[] => {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data?.boards)) return data.boards;
+  return [];
+};
+
 const getBoardId = (board: Board) => board.boardId ?? board.id;
 
 const getBoardName = (board: Board) =>
-  board.boardTitle ?? board.boardName ?? board.title ?? board.name ?? "";
+  board.boardTitle ?? board.boardName ?? board.name ?? board.title ?? "";
 
 const hasValidAccess = (key: string) => {
   const value = sessionStorage.getItem(key);
-
   if (!value) return false;
-
-  if (value === "true") {
-    return true;
-  }
 
   try {
     const parsed = JSON.parse(value);
@@ -62,42 +64,30 @@ const BoardPasswordRoute = ({ children }: Props) => {
 
   const [isChecking, setIsChecking] = useState(true);
   const [isAllowed, setIsAllowed] = useState(false);
-  const [isBlocked, setIsBlocked] = useState(false);
+  const [needsPassword, setNeedsPassword] = useState(false);
   const [currentBoard, setCurrentBoard] = useState<Board | null>(null);
   const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const checkAccess = async () => {
+    const checkBoard = async () => {
       if (!boardName) {
-        setIsBlocked(true);
         setIsChecking(false);
         return;
       }
 
       const decodedBoardName = decodeURIComponent(boardName);
 
-      if (
-        hasValidAccess(`board-access-${decodedBoardName}`) ||
-        hasValidAccess(`board-access-${boardName}`)
-      ) {
-        setIsAllowed(true);
-        setIsChecking(false);
-        return;
-      }
-
       try {
-        const { data } = await api.get<Board[]>("/api/boards", {
-          params: { t: Date.now() },
-        });
+        const { data } = await api.get("/api/boards");
+        const boards = getBoards(data);
 
-        const board = data.find(
+        const board = boards.find(
           (item) => getBoardName(item) === decodedBoardName,
         );
 
         if (!board) {
-        setIsAllowed(true);
-        return;
+          setIsAllowed(true);
+          return;
         }
 
         setCurrentBoard(board);
@@ -110,98 +100,84 @@ const BoardPasswordRoute = ({ children }: Props) => {
           return;
         }
 
-        if (boardId && hasValidAccess(`board-access-${boardId}`)) {
+        if (
+          hasValidAccess(`board-access-${decodedBoardName}`) ||
+          (boardId && hasValidAccess(`board-access-${boardId}`))
+        ) {
           setIsAllowed(true);
           return;
         }
 
-        setIsAllowed(false);
+        setNeedsPassword(true);
       } catch (error) {
         console.error(error);
         setIsAllowed(true);
-        } finally {
+      } finally {
         setIsChecking(false);
       }
     };
 
-    checkAccess();
+    checkBoard();
   }, [boardName]);
 
   const checkPassword = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const boardId = currentBoard ? getBoardId(currentBoard) : undefined;
-    const name = currentBoard ? getBoardName(currentBoard) : boardName;
+    if (!currentBoard || !boardName) return;
 
-    if (!boardId || !name) return;
+    const boardId = getBoardId(currentBoard);
+    const decodedBoardName = decodeURIComponent(boardName);
+
+    if (!boardId) return;
 
     try {
-      setIsSubmitting(true);
+      await api.post(`/api/boards/${boardId}/access`, { password });
 
-      await api.post(`/api/boards/${boardId}/access`, {
-        password,
-      });
+      saveBoardAccess(boardId, decodedBoardName);
 
-      saveBoardAccess(boardId, name);
-      setPassword("");
+      setNeedsPassword(false);
       setIsAllowed(true);
+      setPassword("");
     } catch (error) {
       console.error(error);
       alert("비밀번호가 틀렸습니다");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  if (isChecking) {
-    return null;
-  }
+  if (isChecking) return null;
 
-  if (isBlocked) {
-    return <Navigate to="/" replace />;
-  }
+  if (isAllowed) return children;
 
-  if (isAllowed) {
-    return children;
-  }
+  if (needsPassword) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <form
+          onSubmit={checkPassword}
+          className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+        >
+          <h3 className="mb-4 font-semibold">🔒 Password</h3>
 
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4">
-      <form
-        onSubmit={checkPassword}
-        className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
-      >
-        <h3 className="mb-4 font-semibold">🔒 Password</h3>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mb-4 w-full rounded-xl border px-3 py-2"
+            placeholder="Password"
+            autoFocus
+          />
 
-        <input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          className="mb-4 w-full rounded-xl border px-3 py-2 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
-          placeholder="Password"
-          autoFocus
-        />
-
-        <div className="flex gap-2">
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="rounded-xl bg-pink-500 px-4 py-2 text-white disabled:opacity-60"
+            className="rounded-xl bg-pink-500 px-4 py-2 text-white"
           >
             확인
           </button>
+        </form>
+      </div>
+    );
+  }
 
-          <button
-            type="button"
-            onClick={() => setPassword("")}
-            className="rounded-xl bg-gray-100 px-4 py-2"
-          >
-            취소
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+  return children;
 };
 
 export default BoardPasswordRoute;

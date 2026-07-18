@@ -5,8 +5,9 @@ import type { RootState } from "../store";
 import { logout, setUser } from "../store/authSlice";
 import { useCallback, useEffect, useState } from "react";
 import api from "../api/axios";
-import { normalizeProfileImg } from "../utils/profileImage";
+import { DEFAULT_PROFILE_IMG,normalizeProfileImg } from "../utils/profileImage";
 import { useTranslation } from "react-i18next";
+
 
 // 掲示板情報の型定義
 interface Board {
@@ -380,7 +381,10 @@ const Header = () => {
                 }`}
               >
                 <img
-                  src={normalizeProfileImg(user?.profileImg)}
+                  src={`${normalizeProfileImg(user?.profileImg)}?v=${user?.profileImg ?? Date.now()}`}
+                  onError={(e) => {
+                    e.currentTarget.src = DEFAULT_PROFILE_IMG;
+                  }}
                   className="h-10 w-10 rounded-full border border-white/70 object-cover shadow-sm"
                   alt="profile"
                 />

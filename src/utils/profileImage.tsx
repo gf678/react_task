@@ -1,10 +1,8 @@
 export const DEFAULT_PROFILE_IMG = "/img/default_profile.png";
 
-const API_ORIGIN =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1"
-    ? "http://localhost:3003"
-    : "http://deer2922.ddns.net:3003";
+const API_ORIGIN = import.meta.env.DEV
+  ? "http://localhost:3003"
+  : window.location.origin;
 
 export const normalizeProfileImg = (value?: string | null) => {
   if (!value) {
