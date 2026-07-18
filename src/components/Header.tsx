@@ -226,7 +226,7 @@ const Header = () => {
                   : "text-gray-700 hover:bg-pink-50 hover:text-pink-600"
               }`}
             >
-              {t("AllChannel")}
+              {t("header.AllChannel")}
             </button>
 
             {openMenu === "all" && (
@@ -243,7 +243,7 @@ const Header = () => {
                   ))
                 ) : (
                   <div className="px-3 py-3 text-sm text-gray-400">
-                    {t("NoChannels")}
+                    {t("header.NoChannels")}
                   </div>
                 )}
               </div>
@@ -260,7 +260,7 @@ const Header = () => {
                     : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
                 }`}
               >
-                {t("Favorite")}
+                {t("header.Favorite")}
               </button>
 
               {openMenu === "fav" && (
@@ -277,7 +277,7 @@ const Header = () => {
                     ))
                   ) : (
                     <div className="px-3 py-3 text-sm text-gray-400">
-                      {t("NoSubscribedChannels")}
+                      {t("header.NoSubscribedChannels")}
                     </div>
                   )}
                 </div>
@@ -349,7 +349,7 @@ const Header = () => {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("ChannelSearch")}
+            placeholder={t("header.ChannelSearch")}
             className="w-full rounded-2xl border border-gray-200 bg-white/90 px-4 py-2.5 text-sm outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
           />
 
@@ -401,7 +401,7 @@ const Header = () => {
                 <div className={`${menuPanelClass} right-0 w-64`}>
                   <div className="rounded-2xl bg-gradient-to-r from-pink-50 to-indigo-50 px-4 py-4">
                     <p className="text-xs text-gray-500">
-                      {t("SignedInAs")}
+                      {t("header.SignedInAs")}
                     </p>
 
                     <p className="mt-1 text-base font-semibold text-gray-900">
@@ -415,7 +415,7 @@ const Header = () => {
                         to="/admin"
                         className="block rounded-xl px-3 py-2.5 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50"
                       >
-                        {t("AdminPage")}
+                        {t("header.AdminPage")}
                       </Link>
                     )}
 
@@ -423,14 +423,14 @@ const Header = () => {
                       to="/user/edit"
                       className="block rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-pink-50 hover:text-pink-600"
                     >
-                      {t("MyInfo")}
+                      {t("header.MyInfo")}
                     </Link>
 
                     <button
                       onClick={handleLogout}
                       className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-500"
                     >
-                      {t("Logout")}
+                      {t("header.Logout")}
                     </button>
                   </div>
                 </div>
@@ -441,7 +441,7 @@ const Header = () => {
               to="/login"
               className="rounded-2xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-black"
             >
-              {t("Login")}
+              {t("header.Login")}
             </Link>
           )}
         </div>
