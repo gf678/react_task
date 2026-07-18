@@ -129,14 +129,17 @@ const AdminPage = () => {
 
   // 게시판 수정 시작
   const startEditBoard = (board: Board) => {
+
     setEditingBoardId(board.boardId);
+
     setBoardDraft({
-      name:board.name,
-      description:board.description ?? "",
-      isProtected:board.isProtected,
+      name: board.name,
+      description: board.description ?? "",
+      isProtected: board.isProtected,
       password:"",
-      });
-    }
+    });
+
+  };
 
   // 게시판 수정 취소
   const cancelEditBoard = () => {
@@ -150,36 +153,67 @@ const AdminPage = () => {
   };
 
   // 게시판 저장
-  const saveBoard = async (boardId: number) => {
+  const saveBoard = async (boardId:number)=>{
+
     const name = boardDraft.name.trim();
     const description = boardDraft.description.trim();
 
-    if (!name) {
+
+    if(!name){
       return;
     }
 
-    try {
+
+    if(boardDraft.isProtected && !boardDraft.password){
+
+      const target = boards.find(
+        b=>b.boardId===boardId
+      );
+
+
+      if(target && !target.isProtected){
+        alert("パスワードを入力してください");
+        return;
+      }
+
+    }
+
+
+    try{
+
       setSavingBoardId(boardId);
 
+
       await api.put(
-      `/api/admin/boards/${boardId}`,
-      {
-        name,
-        description,
-        isProtected:boardDraft.isProtected,
-        password:boardDraft.password
-      }
+        `/api/admin/boards/${boardId}`,
+        {
+          name,
+          description,
+          isProtected:boardDraft.isProtected,
+          password:
+            boardDraft.password
+            ? boardDraft.password
+            : undefined
+        }
       );
+
 
       await fetchData();
       cancelEditBoard();
-    } catch (err) {
+
+
+    }catch(err){
+
       console.error(err);
       alert("掲示板の更新に失敗");
-    } finally {
+
+    }finally{
+
       setSavingBoardId(null);
+
     }
-  };
+
+    };
 
   // 게시판 삭제
   const deleteBoard = async (boardId:number) => {
@@ -200,25 +234,17 @@ const AdminPage = () => {
     }
 
   };
-  const toggleProtection = async (
-    boardId:number,
-    isProtected:boolean
-  )=>{
 
-    try{
+  const toggleProtection = (board: Board) => {
 
-      await api.put(`/api/admin/boards/${boardId}`,{
-        isProtected: !isProtected
-      });
+    setEditingBoardId(board.boardId);
 
-      await fetchData();
-
-    }catch(err){
-
-      console.error(err);
-      alert("設定変更失敗");
-
-    }
+    setBoardDraft({
+      name: board.name,
+      description: board.description ?? "",
+      isProtected: !board.isProtected,
+      password:"",
+    });
 
   };
   // 유저 검색
@@ -499,7 +525,7 @@ const AdminPage = () => {
                             {boardDraft.isProtected && (
                               <input
                                 type="password"
-                                placeholder="Password"
+                                placeholder="新しいパスワード"
                                 value={boardDraft.password}
                                 onChange={(e)=>
                                   setBoardDraft(prev=>({
@@ -525,17 +551,13 @@ const AdminPage = () => {
 
                           {/* 공개/비밀 전환 */}
                           <button
-                            onClick={() =>
-                              toggleProtection(
-                                board.boardId,
-                                board.isProtected
-                              )
-                            }
+                            onClick={() => toggleProtection(board)}
                             className="rounded-xl bg-yellow-50 px-3 py-2 text-xs text-yellow-600"
                           >
-                            {board.isProtected ? "🔓 공개" : "🔒 비밀"}
+                            {board.isProtected
+                              ? "🔓 公開解除"
+                              : "🔒 秘密設定"}
                           </button>
-
 
                           {isEditing ? (
                             <>
