@@ -11,7 +11,8 @@ import { useTranslation } from "react-i18next";
 interface Board {
   boardId: number;
   name: string;
-  description: string;
+  description: string | null;
+  isProtected: boolean;
 }
 
 // 유저 타입 정의
@@ -56,15 +57,19 @@ const AdminPage = () => {
   const [newBoard, setNewBoard] = useState({
     name: "",
     description: "",
+    isProtected: false,
+    password: "",
   });
 
   // 현재 수정 중인 게시판 ID
   const [editingBoardId, setEditingBoardId] = useState<number | null>(null);
   // 게시판 수정 임시 데이터
-  const [boardDraft, setBoardDraft] = useState({
-    name: "",
-    description: "",
-  });
+  const [boardDraft,setBoardDraft]=useState({
+    name:"",
+    description:"",
+    isProtected:false,
+    password:"",
+    });
 
   // 최초 렌더링 시 데이터 로드
   useEffect(() => {
@@ -102,10 +107,17 @@ const AdminPage = () => {
       await api.post("/api/admin/boards", {
         name,
         description,
+        isProtected: newBoard.isProtected,
+        password: newBoard.password,
       });
 
       // 입력 초기화 후 재조회
-      setNewBoard({ name: "", description: "" });
+      setNewBoard({
+        name:"",
+        description:"",
+        isProtected:false,
+        password:"",
+      });
       await fetchData();
     } catch (err) {
       console.error(err);
@@ -119,18 +131,21 @@ const AdminPage = () => {
   const startEditBoard = (board: Board) => {
     setEditingBoardId(board.boardId);
     setBoardDraft({
-      name: board.name,
-      description: board.description ?? "",
-    });
-  };
+      name:board.name,
+      description:board.description ?? "",
+      isProtected:board.isProtected,
+      password:"",
+      });
 
   // 게시판 수정 취소
   const cancelEditBoard = () => {
     setEditingBoardId(null);
     setBoardDraft({
-      name: "",
-      description: "",
-    });
+      name:"",
+      description:"",
+      isProtected:false,
+      password:""
+      });
   };
 
   // 게시판 저장
@@ -145,10 +160,15 @@ const AdminPage = () => {
     try {
       setSavingBoardId(boardId);
 
-      await api.put(`/api/admin/boards/${boardId}`, {
+      await api.put(
+      `/api/admin/boards/${boardId}`,
+      {
         name,
         description,
-      });
+        isProtected:boardDraft.isProtected,
+        password:boardDraft.password
+      }
+      );
 
       await fetchData();
       cancelEditBoard();
@@ -280,7 +300,7 @@ const AdminPage = () => {
             </p>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-[1fr_1.4fr_auto]">
+          <div className="grid gap-3">
             <input
               placeholder={t("BoardName")}
               value={newBoard.name}
@@ -301,6 +321,42 @@ const AdminPage = () => {
               }
               className="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
             />
+
+            <div className="flex items-center gap-3">
+
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={newBoard.isProtected}
+                onChange={(e)=>
+                  setNewBoard({
+                    ...newBoard,
+                    isProtected:e.target.checked
+                  })
+                }
+              />
+
+              🔒 {t("ProtectedBoard")}
+            </label>
+
+
+          </div>
+
+
+          {newBoard.isProtected && (
+            <input
+              type="password"
+              placeholder="Password"
+              value={newBoard.password}
+              onChange={(e)=>
+                setNewBoard({
+                  ...newBoard,
+                  password:e.target.value
+                })
+              }
+              className="rounded-xl border border-gray-200 px-4 py-3"
+            />
+          )}
 
             <button
               onClick={createBoard}
@@ -372,6 +428,12 @@ const AdminPage = () => {
                         ) : (
                           <span className="font-medium text-gray-900">
                             {board.name}
+
+                            {board.isProtected && (
+                              <span className="ml-2 text-sm">
+                                🔒
+                              </span>
+                            )}
                           </span>
                         )}
                       </td>
@@ -562,5 +624,5 @@ const AdminPage = () => {
     </div>
   );
 };
-
+}
 export default AdminPage;
