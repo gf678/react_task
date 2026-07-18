@@ -11,6 +11,40 @@ interface Props {
   isProtected: boolean;
 }
 
+const ACCESS_DURATION = 60 * 60 * 1000;
+
+const hasValidAccess = (key: string) => {
+  const value = sessionStorage.getItem(key);
+
+  if (!value) return false;
+
+  if (value === "true") {
+    return true;
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+
+    if (Date.now() > parsed.expiresAt) {
+      sessionStorage.removeItem(key);
+      return false;
+    }
+
+    return true;
+  } catch {
+    sessionStorage.removeItem(key);
+    return false;
+  }
+};
+
+const saveBoardAccess = (boardId: number, boardTitle: string) => {
+  const expiresAt = Date.now() + ACCESS_DURATION;
+  const value = JSON.stringify({ expiresAt });
+
+  sessionStorage.setItem(`board-access-${boardId}`, value);
+  sessionStorage.setItem(`board-access-${boardTitle}`, value);
+};
+
 const BoardCard: React.FC<Props> = ({
   boardId,
   boardTitle,
@@ -25,10 +59,11 @@ const BoardCard: React.FC<Props> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [nextPath, setNextPath] = useState(listPath);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const hasBoardAccess = () =>
-    sessionStorage.getItem(`board-access-${boardId}`) === "true" ||
-    sessionStorage.getItem(`board-access-${boardTitle}`) === "true";
+    hasValidAccess(`board-access-${boardId}`) ||
+    hasValidAccess(`board-access-${boardTitle}`);
 
   const formatDate = (date?: string) => {
     if (!date) return "";
@@ -57,21 +92,13 @@ const BoardCard: React.FC<Props> = ({
 
   const checkPassword = async () => {
     try {
+      setIsSubmitting(true);
+
       await api.post(`/api/boards/${boardId}/access`, {
         password,
       });
 
-      const expiresAt = Date.now() + 60 * 60 * 1000;
-
-      sessionStorage.setItem(
-        `board-access-${boardId}`,
-        JSON.stringify({ expiresAt }),
-      );
-
-      sessionStorage.setItem(
-        `board-access-${boardTitle}`,
-        JSON.stringify({ expiresAt }),
-      );
+      saveBoardAccess(boardId, boardTitle);
 
       setShowPassword(false);
       setPassword("");
@@ -80,6 +107,8 @@ const BoardCard: React.FC<Props> = ({
     } catch (err) {
       console.error(err);
       alert("비밀번호가 틀렸습니다");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -88,11 +117,11 @@ const BoardCard: React.FC<Props> = ({
       <div className="border-b border-gray-100 px-5 py-4">
         <div className="flex items-center justify-between gap-3">
           <button
+            type="button"
             onClick={openBoard}
             className="truncate text-lg font-semibold text-gray-900 transition hover:text-pink-600"
           >
             {boardTitle}
-
             {isProtected && <span className="ml-2">🔒</span>}
           </button>
 
@@ -110,11 +139,12 @@ const BoardCard: React.FC<Props> = ({
             return (
               <li key={post.postId}>
                 <Link
-                  to={isProtected ? "#" : postPath}
+                  to={postPath}
                   onClick={(e) => {
-                    if (isProtected) {
+                    if (isProtected && !hasBoardAccess()) {
                       e.preventDefault();
-                      openProtectedPath(postPath);
+                      setNextPath(postPath);
+                      setShowPassword(true);
                     }
                   }}
                   className="block px-5 py-4 transition hover:bg-pink-50/40"
@@ -135,7 +165,6 @@ const BoardCard: React.FC<Props> = ({
                         <span>
                           {post.user?.alias ?? t("boardCard.anonymous")}
                         </span>
-
                         <span>{formatDate(post.createdAt)}</span>
                       </div>
                     </div>
@@ -144,7 +173,6 @@ const BoardCard: React.FC<Props> = ({
                       <span className="rounded-full bg-gray-100 px-2 py-1">
                         👍 {post.likes - post.dislikes}
                       </span>
-
                       <span className="rounded-full bg-gray-100 px-2 py-1">
                         👁 {post.views}
                       </span>
@@ -157,6 +185,7 @@ const BoardCard: React.FC<Props> = ({
         ) : (
           <li className="px-5 py-10 text-center text-sm text-gray-400">
             <button
+              type="button"
               onClick={openBoard}
               className="transition hover:text-pink-500"
             >
@@ -168,6 +197,7 @@ const BoardCard: React.FC<Props> = ({
 
       <div className="border-t border-gray-100 bg-gray-50/70 px-5 py-3">
         <button
+          type="button"
           onClick={openBoard}
           className="text-sm font-medium text-gray-600 transition hover:text-pink-600"
         >
@@ -177,7 +207,13 @@ const BoardCard: React.FC<Props> = ({
 
       {showPassword && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="rounded-2xl bg-white p-6 shadow-xl">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void checkPassword();
+            }}
+            className="rounded-2xl bg-white p-6 shadow-xl"
+          >
             <h3 className="mb-4 font-semibold">🔒 Password</h3>
 
             <input
@@ -186,17 +222,20 @@ const BoardCard: React.FC<Props> = ({
               onChange={(e) => setPassword(e.target.value)}
               className="mb-4 rounded-xl border px-3 py-2"
               placeholder="Password"
+              autoFocus
             />
 
             <div className="flex gap-2">
               <button
-                onClick={checkPassword}
-                className="rounded-xl bg-pink-500 px-4 py-2 text-white"
+                type="submit"
+                disabled={isSubmitting}
+                className="rounded-xl bg-pink-500 px-4 py-2 text-white disabled:opacity-60"
               >
                 확인
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   setShowPassword(false);
                   setPassword("");
@@ -207,7 +246,7 @@ const BoardCard: React.FC<Props> = ({
                 취소
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>
