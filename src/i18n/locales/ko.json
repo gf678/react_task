@@ -80,14 +80,52 @@
     "createPost": "게시글 작성",
     "comments": "댓글",
     "recommend": "추천",
-    "noPosts": "게시글이 없습니다",
-    "commentjpg":"댓글에 사진 달기"
+    "noPosts": "게시글이 없습니다"
   },
 
+    "error": {
+  "BadRequest": "잘못된 요청",
+  "InvalidRequestTitle": "요청을 처리할 수 없습니다.",
+  "InvalidRequestDescription": "입력한 정보가 올바르지 않습니다.",
+  "InvalidRequestHelper": "요청 내용을 확인한 후 다시 시도해주세요.",
+
+  "Forbidden": "접근 거부",
+  "ForbiddenTitle": "접근 권한이 없습니다.",
+  "ForbiddenDescription": "해당 페이지에 접근할 수 없습니다.",
+  "ForbiddenHelper": "로그인 상태 또는 권한을 확인해주세요.",
+
+  "NotFound": "페이지 없음",
+  "NotFoundTitle": "페이지를 찾을 수 없습니다.",
+  "NotFoundDescription": "요청한 페이지가 존재하지 않습니다.",
+  "NotFoundHelper": "주소를 확인하거나 이전 화면으로 돌아가주세요.",
+
+  "Timeout": "시간 초과",
+  "TimeoutTitle": "요청 시간이 초과되었습니다.",
+  "TimeoutDescription": "서버 응답이 너무 오래 걸리고 있습니다.",
+  "TimeoutHelper": "잠시 후 다시 시도해주세요.",
+
+  "Gone": "삭제된 페이지",
+  "GoneTitle": "더 이상 사용할 수 없는 페이지입니다.",
+  "GoneDescription": "요청한 리소스가 삭제되었습니다.",
+  "GoneHelper": "다른 페이지를 이용해주세요.",
+
+  "ServerError": "서버 오류",
+  "ServerErrorTitle": "서버 오류가 발생했습니다.",
+  "ServerErrorDescription": "페이지를 불러오는 중 문제가 발생했습니다.",
+  "ServerErrorHelper": "잠시 후 다시 시도해주세요.",
+
+  "status": "상태 코드",
+  "path": "경로",
+  "cannotLoadPage": "페이지를 불러올 수 없습니다.",
+  "goHome": "홈으로 이동",
+  "goBack": "뒤로 가기"
+},
   "post": {
     "label": "게시글",
     "write": "게시글 작성",
     "edit": "게시글 수정",
+    "writePost":"글 작성하기",
+    "writeHelper":"원하시는 글을 마음껏 작성해보세요",
     "title": "제목",
     "titlePlaceholder": "제목을 입력해주세요",
     "validation": "제목과 내용을 입력해주세요",
@@ -120,7 +158,8 @@
     "save": "저장",
     "cancel": "취소",
     "edit": "수정",
-    "delete": "삭제"
+    "delete": "삭제",
+    "commentjpg":"댓글에 사진 달기"
   },
 
   "profile": {
@@ -136,15 +175,6 @@
     "nicknamePlaceholder": "이름을 입력해주세요",
     "passwordPlaceholder": "변경을 원하실 경우에만 입력해주세요",
     "phonePlaceholder":"변경을 원하실 경우에만 입력해주세요"
-  },
-
-  "error": {
-    "badRequest": "잘못된 요청입니다",
-    "forbidden": "접근 권한이 없습니다",
-    "notFound": "페이지를 찾을 수 없습니다",
-    "timeout": "요청 시간이 초과되었습니다",
-    "server": "서버 오류가 발생했습니다",
-    "home": "홈으로 돌아가기"
   },
 
   "boardCard": {
