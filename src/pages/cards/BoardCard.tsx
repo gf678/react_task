@@ -61,8 +61,17 @@ const BoardCard: React.FC<Props> = ({
         password,
       });
 
-      sessionStorage.setItem(`board-access-${boardId}`, "true");
-      sessionStorage.setItem(`board-access-${boardTitle}`, "true");
+      const expiresAt = Date.now() + 60 * 60 * 1000;
+
+      sessionStorage.setItem(
+        `board-access-${boardId}`,
+        JSON.stringify({ expiresAt }),
+      );
+
+      sessionStorage.setItem(
+        `board-access-${boardTitle}`,
+        JSON.stringify({ expiresAt }),
+      );
 
       setShowPassword(false);
       setPassword("");

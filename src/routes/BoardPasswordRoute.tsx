@@ -18,6 +18,26 @@ interface Board {
   protected?: boolean;
 }
 
+const hasValidAccess = (key: string) => {
+  const value = sessionStorage.getItem(key);
+
+  if (!value) return false;
+
+  try {
+    const parsed = JSON.parse(value);
+
+    if (Date.now() > parsed.expiresAt) {
+      sessionStorage.removeItem(key);
+      return false;
+    }
+
+    return true;
+  } catch {
+    sessionStorage.removeItem(key);
+    return false;
+  }
+};
+
 const BoardPasswordRoute = ({ children }: Props) => {
   const { boardName } = useParams();
   const [isChecking, setIsChecking] = useState(true);
@@ -34,8 +54,8 @@ const BoardPasswordRoute = ({ children }: Props) => {
       const decodedBoardName = decodeURIComponent(boardName);
 
       if (
-        sessionStorage.getItem(`board-access-${decodedBoardName}`) === "true" ||
-        sessionStorage.getItem(`board-access-${boardName}`) === "true"
+        hasValidAccess(`board-access-${decodedBoardName}`) ||
+        hasValidAccess(`board-access-${boardName}`)
       ) {
         setIsAllowed(true);
         setIsChecking(false);
@@ -69,9 +89,7 @@ const BoardPasswordRoute = ({ children }: Props) => {
         }
 
         setIsAllowed(
-          boardId
-            ? sessionStorage.getItem(`board-access-${boardId}`) === "true"
-            : false,
+          boardId ? hasValidAccess(`board-access-${boardId}`) : false,
         );
       } catch (error) {
         console.error(error);
