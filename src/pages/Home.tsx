@@ -209,10 +209,11 @@ const Home: React.FC = () => {
 
               {boards.map((b) => (
                 <BoardCard
-                  key={b.name}
-                  boardTitle={b.name}
-                  posts={boardMap[b.name] ?? []}
-                  isProtected={b.isProtected}
+                key={b.boardId}
+                boardId={b.boardId}
+                boardTitle={b.name}
+                posts={boardMap[b.name] ?? []}
+                isProtected={b.isProtected}
                 />
               ))}
 
