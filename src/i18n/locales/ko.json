@@ -80,7 +80,8 @@
     "createPost": "게시글 작성",
     "comments": "댓글",
     "recommend": "추천",
-    "noPosts": "게시글이 없습니다"
+    "noPosts": "게시글이 없습니다",
+    "commentjpg":"댓글에 사진 달기"
   },
 
   "post": {

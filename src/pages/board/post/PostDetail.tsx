@@ -417,7 +417,7 @@ const PostDetail = () => {
                     "
                   >
 
-                    📷 画像追加
+                    {t("comment.commentjpg")}
 
                     <input
                       type="file"
