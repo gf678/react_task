@@ -1,15 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Post } from "../../types/post";
 import { useTranslation } from "react-i18next";
 
 interface Props {
   boardTitle: string;
   posts: Post[];
+  isProtected: boolean;
 }
 
-const BoardCard: React.FC<Props> = ({ boardTitle, posts }) => {
+const BoardCard: React.FC<Props> = ({
+  boardTitle,
+  posts,
+  isProtected,
+}) => {
   const { t } = useTranslation();
+
+  const navigate = useNavigate();
 
   const formatDate = (date?: string) => {
     if (!date) return "";
@@ -22,18 +29,33 @@ const BoardCard: React.FC<Props> = ({ boardTitle, posts }) => {
       .padStart(2, "0")}`;
   };
 
+  const openBoard = () => {
+    if (isProtected) {
+      navigate(`/board/${boardTitle}/list?locked=true`);
+      return;
+    }
+
+    navigate(`/board/${boardTitle}/list`);
+  };
+
   return (
     <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
 
       <div className="border-b border-gray-100 px-5 py-4">
         <div className="flex items-center justify-between gap-3">
 
-          <Link
-            to={`/board/${boardTitle}/list`}
-            className="truncate text-lg font-semibold text-gray-900 transition hover:text-pink-600"
-          >
-            {boardTitle}
-          </Link>
+          <button
+          onClick={openBoard}
+          className="truncate text-lg font-semibold text-gray-900 transition hover:text-pink-600"
+        >
+          {boardTitle}
+
+          {isProtected && (
+            <span className="ml-2">
+              🔒
+            </span>
+          )}
+        </button>
 
           <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600">
             {posts.length} {t("boardCard.posts")}

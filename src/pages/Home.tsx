@@ -6,8 +6,11 @@ import type { Post } from "../types/post";
 import { useTranslation } from "react-i18next";
 
 interface Board {
-  id?: number;
+  boardId: number;
   name: string;
+  isProtected: boolean;
+  description: string | null;
+  posts: Post[];
 }
 
 const Home: React.FC = () => {
@@ -25,54 +28,59 @@ const Home: React.FC = () => {
 
   const loadHome = async () => {
     try {
+
       setLoading(true);
 
-      const boardRes = await api.get("/api/boards");
+      const res = await api.get("/api/boards");
 
-      // バックエンドのレスポンス形式（配列、data、boards）の揺れを吸収して処理
-      const boardsData: Board[] = Array.isArray(boardRes.data)
-        ? boardRes.data
-        : boardRes.data?.data ?? boardRes.data?.boards ?? [];
+
+      const boardsData: Board[] = Array.isArray(res.data)
+        ? res.data
+        : res.data?.boards ?? [];
+
 
       setBoards(boardsData);
 
-      // 各掲示板の最新投稿を並列で取得
-      const postPromises = boardsData.map((b) => api.get(`/api/posts/${b.name}`));
-      const postResults = await Promise.all(postPromises);
 
       const map: Record<string, Post[]> = {};
 
-      postResults.forEach((res, idx) => {
-        const boardName = boardsData[idx]?.name;
 
-        const posts: Post[] = Array.isArray(res.data)
-          ? res.data
-          : res.data?.data ?? [];
+      boardsData.forEach((board)=>{
 
-        // 投稿データに掲示板情報が欠けている場合の補完処理
-        const safePosts = posts.map((p: any) => ({
-          ...p,
-          board: p.board ?? { name: boardName ?? "unknown" },
-        }));
-
-        if (boardName) {
-          map[boardName] = safePosts;
+        if(board.isProtected){
+          map[board.name]=[];
+        }else{
+          map[board.name]=board.posts ?? [];
         }
+
       });
+
 
       setBoardMap(map);
 
-      // 全投稿を「いいね数」順にソートし、人気投稿リスト（Top 10）を作成
+
       const allPosts = Object.values(map).flat();
+
+
       const sorted = [...allPosts].sort(
-        (a: any, b: any) => (b.likes ?? 0) - (a.likes ?? 0),
+        (a,b)=>
+          (b.likes-b.dislikes)
+          -
+          (a.likes-a.dislikes)
       );
 
-      setPopularPosts(sorted.slice(0, 10));
-    } catch (err) {
-      console.error("Home load error:", err);
+
+      setPopularPosts(sorted.slice(0,10));
+
+
+    } catch(err){
+
+      console.error("Home load error:",err);
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
@@ -204,6 +212,7 @@ const Home: React.FC = () => {
                   key={b.name}
                   boardTitle={b.name}
                   posts={boardMap[b.name] ?? []}
+                  isProtected={b.isProtected}
                 />
               ))}
 
