@@ -157,17 +157,28 @@ const PostDetail = () => {
 
   // コメント投稿処理: バリデーション後、APIを呼び出して投稿。成功時にリストを再読み込み
   const handleCommentSubmit = async () => {
-    if (!commentInput.trim() || !post) return;
+
+    // 내용도 없고 사진도 없으면 등록 불가
+    if (!commentInput.trim() && !commentImage) {
+      return;
+    }
+
+    if (!post) return;
+
 
     const fd = new FormData();
 
 
-    fd.append(
-      "content",
-      commentInput
-    );
+    // 내용이 있으면 추가
+    if(commentInput.trim()){
+      fd.append(
+        "content",
+        commentInput
+      );
+    }
 
 
+    // 답글이면 추가
     if(parentId){
       fd.append(
         "parentId",
@@ -176,13 +187,13 @@ const PostDetail = () => {
     }
 
 
+    // 이미지 있으면 추가
     if(commentImage){
       fd.append(
         "image",
         commentImage
       );
     }
-
 
 
     await api.post(
@@ -195,10 +206,12 @@ const PostDetail = () => {
       }
     );
 
+
     setCommentInput("");
     setParentId(null);
     setCommentImage(null);
     setImagePreview(null);
+
     await loadPost();
   };
 
