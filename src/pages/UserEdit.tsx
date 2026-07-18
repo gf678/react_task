@@ -11,30 +11,10 @@ import { setUser, updateUser } from "../store/authSlice";
 import type { RootState } from "../store";
 import { useTranslation } from "react-i18next";
 
-const DEFAULT_PROFILE = "/img/default_profile.png";
-
-const API_ORIGIN =
-  window.location.hostname === "localhost"
-    ? "http://localhost:3003"
-    : "http://deer2922.ddns.net:3003";
-
-const normalizeProfileImg = (value?: string | null) => {
-  if (!value) return DEFAULT_PROFILE;
-
-  if (value === DEFAULT_PROFILE || value.startsWith("/img/")) {
-    return value;
-  }
-
-  if (
-    value.startsWith("data:") ||
-    value.startsWith("http://") ||
-    value.startsWith("https://")
-  ) {
-    return value;
-  }
-
-  return `${API_ORIGIN}${value.startsWith("/") ? value : `/${value}`}`;
-};
+import {
+  DEFAULT_PROFILE_IMG,
+  normalizeProfileImg,
+} from "../utils/profileImage";
 
 type UserSnapshot = {
   alias?: string | null;
@@ -56,7 +36,7 @@ const UserEdit = () => {
     password: "",
   });
 
-  const [preview, setPreview] = useState(DEFAULT_PROFILE);
+  const [preview, setPreview] = useState(DEFAULT_PROFILE_IMG);
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
@@ -198,7 +178,7 @@ const UserEdit = () => {
   const setImageToDefault = () => {
     setFile(null);
     setRemoveProfileImg(true);
-    setPreview(DEFAULT_PROFILE);
+    setPreview(DEFAULT_PROFILE_IMG);
 
     applyDraftToRedux(
       form.alias,
@@ -217,7 +197,7 @@ const UserEdit = () => {
 
     const shouldRemoveProfileImg =
       removeProfileImg &&
-      original.profileImg !== DEFAULT_PROFILE;
+      original.profileImg !== DEFAULT_PROFILE_IMG;
 
     const isChanged =
       form.alias !== original.alias ||
@@ -328,7 +308,7 @@ const UserEdit = () => {
             <div className="flex flex-col items-center text-center">
 
               <img
-                src={preview}
+              src={`${normalizeProfileImg(currentUser?.profileImg)}?v=${currentUser?.profileImg ?? Date.now()}`}
                 alt={t("profile.previewAlt")}
                 className="h-28 w-28 rounded-full border-4 border-white object-cover shadow"
               />
