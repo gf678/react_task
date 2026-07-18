@@ -97,11 +97,11 @@ const Auth = () => {
               </p>
 
               <h1 className="mt-4 text-4xl font-bold leading-tight text-gray-900">
-                {t("CommunityTitle")}
+                {t("auth.CommunityTitle")}
               </h1>
 
               <p className="mt-4 max-w-md text-sm leading-6 text-gray-600">
-                {t("CommunityDescription")}
+                {t("auth.CommunityDescription")}
               </p>
             </div>
 
@@ -110,35 +110,35 @@ const Auth = () => {
               {isSignup ? (
                 <>
                   <p className="text-sm font-medium text-gray-500">
-                    {t("AlreadyAccount")}
+                    {t("auth.AlreadyAccount")}
                   </p>
 
                   <h2 className="mt-2 text-2xl font-semibold text-gray-900">
-                    {t("LoginAgain")}
+                    {t("auth.LoginAgain")}
                   </h2>
 
                   <button
                     onClick={() => setMode("signin")}
                     className="mt-5 rounded-2xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-black"
                   >
-                    {t("Login")}
+                    {t("auth.Login")}
                   </button>
                 </>
               ) : (
                 <>
                   <p className="text-sm font-medium text-gray-500">
-                    {t("FirstTime")}
+                    {t("auth.FirstTime")}
                   </p>
 
                   <h2 className="mt-2 text-2xl font-semibold text-gray-900">
-                    {t("CreateAccountStart")}
+                    {t("auth.CreateAccountStart")}
                   </h2>
 
                   <button
                     onClick={() => setMode("signup")}
                     className="mt-5 rounded-2xl bg-pink-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-pink-600"
                   >
-                    {t("Register")}
+                    {t("auth.Register")}
                   </button>
                 </>
               )}
@@ -180,7 +180,7 @@ const Auth = () => {
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  {t("Login")}
+                  {t("auth.Login")}
                 </button>
 
 
@@ -196,7 +196,7 @@ const Auth = () => {
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  {t("Register")}
+                  {t("auth.Register")}
                 </button>
               </div>
             )}
@@ -214,7 +214,7 @@ const Auth = () => {
                   <input
                     name="loginId"
                     className={inputClass}
-                    placeholder={t("EnterID")}
+                    placeholder={t("auth.EnterID")}
                     required
                   />
                 </div>
@@ -222,14 +222,14 @@ const Auth = () => {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    {t("Password")}
+                    {t("auth.Password")}
                   </label>
 
                   <input
                     name="password"
                     type="password"
                     className={inputClass}
-                    placeholder={t("EnterPassword")}
+                    placeholder={t("auth.EnterPassword")}
                     required
                   />
                 </div>
@@ -244,7 +244,7 @@ const Auth = () => {
                     }}
                     className="text-xs font-medium text-gray-400 hover:text-pink-500"
                   >
-                    {t("ForgotPassword")}
+                    {t("auth.ForgotPassword")}
                   </button>
                 </div>
 
@@ -257,7 +257,7 @@ const Auth = () => {
 
 
                 <button className="w-full rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">
-                  {t("Login")}
+                  {t("auth.Login")}
                 </button>
 
               </form>
@@ -270,13 +270,13 @@ const Auth = () => {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    {t("Nickname")}
+                    {t("auth.Nickname")}
                   </label>
 
                   <input
                     name="alias"
                     className={inputClass}
-                    placeholder={t("Nickname")}
+                    placeholder={t("auth.Nickname")}
                     required
                   />
                 </div>
@@ -284,13 +284,13 @@ const Auth = () => {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    {t("ID")}
+                    {t("auth.ID")}
                   </label>
 
                   <input
                     name="loginId"
                     className={inputClass}
-                    placeholder={t("ID")}
+                    placeholder={t("auth.ID")}
                     required
                   />
                 </div>
@@ -298,7 +298,7 @@ const Auth = () => {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    {t("Email")}
+                    {t("auth.Email")}
                   </label>
 
                   <input
@@ -313,21 +313,21 @@ const Auth = () => {
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    {t("Password")}
+                    {t("auth.Password")}
                   </label>
 
                   <input
                     name="password"
                     type="password"
                     className={inputClass}
-                    placeholder={t("Password")}
+                    placeholder={t("auth.Password")}
                     required
                   />
                 </div>
 
 
                 <button className="w-full rounded-2xl bg-pink-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-pink-600">
-                  {t("Register")}
+                  {t("auth.Register")}
                 </button>
 
               </form>
@@ -340,18 +340,18 @@ const Auth = () => {
 
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    {t("ResetPassword")}
+                    {t("auth.ResetPassword")}
                   </h2>
 
                   <p className="mt-2 text-sm text-gray-500">
-                    {t("ResetPasswordDescription")}
+                    {t("auth.ResetPasswordDescription")}
                   </p>
                 </div>
 
 
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
-                    {t("EmailAddress")}
+                    {t("auth.EmailAddress")}
                   </label>
 
                   <input
@@ -379,7 +379,7 @@ const Auth = () => {
 
 
                 <button className="w-full rounded-2xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">
-                  {t("SendEmail")}
+                  {t("auth.SendEmail")}
                 </button>
 
 
@@ -392,7 +392,7 @@ const Auth = () => {
                   }}
                   className="w-full text-sm font-medium text-gray-500 hover:text-gray-700"
                 >
-                  {t("BackToLogin")}
+                  {t("auth.BackToLogin")}
                 </button>
 
               </form>

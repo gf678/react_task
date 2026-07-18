@@ -267,7 +267,7 @@ const PostEdit: React.FC = () => {
       });
 
       // API呼び出し（PUTメソッドによる更新）
-      await api.put(`/api/posts/${safeBoardName}/${postId}`, formData);
+      await api.put(`/api/posts/${postId}`, formData);
 
       // 完了後、一覧画面へ遷移
       navigate(`/board/${safeBoardName}/list`);
