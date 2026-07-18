@@ -7,40 +7,16 @@ interface Props {
   children: JSX.Element;
 }
 
-interface BoardSummary {
+interface Board {
   boardId?: number;
+  id?: number;
   boardTitle?: string;
   boardName?: string;
   title?: string;
   name?: string;
   isProtected?: boolean;
+  protected?: boolean;
 }
-
-type BoardsResponse =
-  | BoardSummary[]
-  | {
-      boards?: BoardSummary[];
-      data?: BoardSummary[];
-    };
-
-const getBoards = (response: BoardsResponse) => {
-  if (Array.isArray(response)) {
-    return response;
-  }
-
-  if (Array.isArray(response.boards)) {
-    return response.boards;
-  }
-
-  if (Array.isArray(response.data)) {
-    return response.data;
-  }
-
-  return [];
-};
-
-const getBoardName = (board: BoardSummary) =>
-  board.boardTitle ?? board.boardName ?? board.title ?? board.name ?? "";
 
 const BoardPasswordRoute = ({ children }: Props) => {
   const { boardName } = useParams();
@@ -55,34 +31,47 @@ const BoardPasswordRoute = ({ children }: Props) => {
         return;
       }
 
+      const decodedBoardName = decodeURIComponent(boardName);
+
+      if (
+        sessionStorage.getItem(`board-access-${decodedBoardName}`) === "true" ||
+        sessionStorage.getItem(`board-access-${boardName}`) === "true"
+      ) {
+        setIsAllowed(true);
+        setIsChecking(false);
+        return;
+      }
+
       try {
-        const { data } = await api.get<BoardsResponse>("/api/boards");
-        const boards = getBoards(data);
-        const currentBoard = boards.find(
-          (board) => getBoardName(board) === boardName,
-        );
+        const { data } = await api.get<Board[]>("/api/boards", {
+          params: { t: Date.now() },
+        });
+
+        const currentBoard = data.find((board) => {
+          const name =
+            board.boardTitle ?? board.boardName ?? board.title ?? board.name;
+
+          return name === decodedBoardName;
+        });
 
         if (!currentBoard) {
           setIsAllowed(false);
           return;
         }
 
-        if (!currentBoard.isProtected) {
+        const boardId = currentBoard.boardId ?? currentBoard.id;
+        const isProtected =
+          currentBoard.isProtected ?? currentBoard.protected ?? false;
+
+        if (!isProtected) {
           setIsAllowed(true);
           return;
         }
 
-        const accessKeys = [
-          currentBoard.boardId
-            ? `board-access-${currentBoard.boardId}`
-            : undefined,
-          `board-access-${boardName}`,
-        ].filter(Boolean);
-
         setIsAllowed(
-          accessKeys.some(
-            (key) => sessionStorage.getItem(key as string) === "true",
-          ),
+          boardId
+            ? sessionStorage.getItem(`board-access-${boardId}`) === "true"
+            : false,
         );
       } catch (error) {
         console.error(error);
@@ -95,9 +84,7 @@ const BoardPasswordRoute = ({ children }: Props) => {
     checkAccess();
   }, [boardName]);
 
-  if (isChecking) {
-    return null;
-  }
+  if (isChecking) return null;
 
   if (!isAllowed) {
     return <Navigate to="/" replace />;
