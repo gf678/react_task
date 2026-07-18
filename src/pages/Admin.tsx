@@ -181,6 +181,46 @@ const AdminPage = () => {
     }
   };
 
+  // 게시판 삭제
+  const deleteBoard = async (boardId:number) => {
+
+    if(!confirm("掲示板を削除しますか？")) {
+      return;
+    }
+
+    try {
+
+      await api.delete(`/api/admin/boards/${boardId}`);
+
+      await fetchData();
+
+    } catch(err){
+      console.error(err);
+      alert("掲示板の削除に失敗");
+    }
+
+  };
+  const toggleProtection = async (
+    boardId:number,
+    isProtected:boolean
+  )=>{
+
+    try{
+
+      await api.put(`/api/admin/boards/${boardId}`,{
+        isProtected: !isProtected
+      });
+
+      await fetchData();
+
+    }catch(err){
+
+      console.error(err);
+      alert("設定変更失敗");
+
+    }
+
+  };
   // 유저 검색
   const searchUser = async () => {
     const keyword = searchId.trim();
@@ -441,17 +481,38 @@ const AdminPage = () => {
 
                       <td className="px-4 py-4">
                         {isEditing ? (
-                          <textarea
-                            value={boardDraft.description}
-                            onChange={(e) =>
-                              setBoardDraft((prev) => ({
-                                ...prev,
-                                description: e.target.value,
-                              }))
-                            }
-                            rows={3}
-                            className="w-full rounded-xl border border-gray-200 px-3 py-2"
-                          />
+                          <div className="space-y-3">
+
+                            <textarea
+                              value={boardDraft.description}
+                              onChange={(e) =>
+                                setBoardDraft((prev) => ({
+                                  ...prev,
+                                  description: e.target.value,
+                                }))
+                              }
+                              rows={3}
+                              className="w-full rounded-xl border border-gray-200 px-3 py-2"
+                            />
+
+
+                            {boardDraft.isProtected && (
+                              <input
+                                type="password"
+                                placeholder="Password"
+                                value={boardDraft.password}
+                                onChange={(e)=>
+                                  setBoardDraft(prev=>({
+                                    ...prev,
+                                    password:e.target.value
+                                  }))
+                                }
+                                className="w-full rounded-xl border border-gray-200 px-3 py-2"
+                              />
+                            )}
+
+                          </div>
+
                         ) : (
                           <span className="text-gray-600">
                             {board.description || "-"}
@@ -461,6 +522,21 @@ const AdminPage = () => {
 
                       <td className="px-4 py-4">
                         <div className="flex justify-end gap-2">
+
+                          {/* 공개/비밀 전환 */}
+                          <button
+                            onClick={() =>
+                              toggleProtection(
+                                board.boardId,
+                                board.isProtected
+                              )
+                            }
+                            className="rounded-xl bg-yellow-50 px-3 py-2 text-xs text-yellow-600"
+                          >
+                            {board.isProtected ? "🔓 공개" : "🔒 비밀"}
+                          </button>
+
+
                           {isEditing ? (
                             <>
                               <button
@@ -488,6 +564,17 @@ const AdminPage = () => {
                               {t("Edit")}
                             </button>
                           )}
+
+
+                          {/* 삭제 */}
+                          <button
+                            onClick={() => deleteBoard(board.boardId)}
+                            className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-600"
+                          >
+                            삭제
+                          </button>
+
+
                         </div>
                       </td>
                     </tr>
