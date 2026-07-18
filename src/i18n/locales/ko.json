@@ -74,8 +74,8 @@
     "popularPosts": "인기 게시글",
     "noPopular": "인기 게시글이 없습니다.",
     "popularDescription": "인기 게시글을 확인해보세요.",
-    "boardDescription": "게시판의 글들을 한번에 확인해보세요."
-    
+    "boardDescription": "게시판의 글들을 한번에 확인해보세요.",
+    "boardsTitle": "게시판 미리보기"    
   },
 
   "board": {
@@ -117,6 +117,7 @@
 
   "comment": {
     "title": "댓글",
+    "total": "댓글이지에",
     "reply": "답글",
     "write": "댓글 작성",
     "placeholder": "댓글을 입력하세요",
@@ -135,7 +136,11 @@
     "phone": "전화번호",
     "changeImage": "이미지 변경",
     "resetImage": "기본 이미지로 변경",
-    "save": "변경 저장"
+    "save": "변경 저장",
+    "nicknameEmpty": "이름을 입력해주세요",
+    "nicknamePlaceholder": "이름을 입력해주세요",
+    "passwordPlaceholder": "변경을 원하실 경우에만 입력해주세요",
+    "phonePlaceholder":"변경을 원하실 경우에만 입력해주세요"
   },
 
   "error": {
