@@ -96,8 +96,8 @@ const BoardPasswordRoute = ({ children }: Props) => {
         );
 
         if (!board) {
-          setIsBlocked(true);
-          return;
+        setIsAllowed(true);
+        return;
         }
 
         setCurrentBoard(board);
@@ -118,8 +118,8 @@ const BoardPasswordRoute = ({ children }: Props) => {
         setIsAllowed(false);
       } catch (error) {
         console.error(error);
-        setIsBlocked(true);
-      } finally {
+        setIsAllowed(true);
+        } finally {
         setIsChecking(false);
       }
     };
