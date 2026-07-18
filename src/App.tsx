@@ -10,37 +10,64 @@ import ResetPassword from "./pages/ResetPassword";
 import BoardContainer from "./pages/board/boardContainer";
 import PostWrite from "./pages/board/post/PostWrite";
 import PostDetail from "./pages/board/post/PostDetail";
+import PostEdit from "./pages/board/post/PostEdit";
+
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
+import BoardPasswordRoute from "./routes/BoardPasswordRoute";
+
 import ErrorPage from "./pages/ErrorPage";
-import PostEdit from "./pages/board/post/PostEdit";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Auth />} />
-      
+
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/board/:boardName/list" element={<BoardContainer />} />
-        <Route path="/board/:boardName/post/:postId" element={<PostDetail />} />
+
+        <Route
+          path="/board/:boardName/list"
+          element={
+            <BoardPasswordRoute>
+              <BoardContainer />
+            </BoardPasswordRoute>
+          }
+        />
+
+        <Route
+          path="/board/:boardName/post/:postId"
+          element={
+            <BoardPasswordRoute>
+              <PostDetail />
+            </BoardPasswordRoute>
+          }
+        />
+
         <Route path="/reset-password" element={<ResetPassword />} />
+
         <Route
           path="/board/:boardName/write"
           element={
             <ProtectedRoute>
-              <PostWrite />
+              <BoardPasswordRoute>
+                <PostWrite />
+              </BoardPasswordRoute>
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/board/:boardName/update/:postId"
           element={
             <ProtectedRoute>
-              <PostEdit />
+              <BoardPasswordRoute>
+                <PostEdit />
+              </BoardPasswordRoute>
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/user/edit"
           element={
@@ -49,6 +76,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/admin"
           element={
@@ -57,6 +85,7 @@ function App() {
             </AdminRoute>
           }
         />
+
         <Route path="/error" element={<ErrorPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
