@@ -24,4 +24,5 @@ export interface CommentData {
   user: CommentUser;
   parentId?: number | null;
   parent?: { commentId: number } | null;
+  image?: string | null;
 }

@@ -182,8 +182,25 @@ const CommentItem = ({
                 </div>
               </div>
             ) : (
-              <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-700">
-                {comment.content}
+              <div>
+                <div className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-700">
+                  {comment.content}
+                </div>
+
+                {comment.image && (
+                  <img
+                    src={comment.image}
+                    alt="comment image"
+                    className="
+                      mt-3
+                      max-h-80
+                      max-w-full
+                      rounded-xl
+                      border
+                      object-contain
+                    "
+                  />
+                )}
               </div>
             )}
 

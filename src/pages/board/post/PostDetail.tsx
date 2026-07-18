@@ -40,6 +40,8 @@ const PostDetail = () => {
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [commentInput, setCommentInput] = useState("");
+  const [commentImage, setCommentImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [parentId, setParentId] = useState<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
@@ -54,6 +56,40 @@ const PostDetail = () => {
     setDislikes(data.dislikes);
   };
 
+  const handleCommentImage = (
+  e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+
+    const file = e.target.files?.[0];
+
+    if(!file) return;
+
+
+    if(!file.type.startsWith("image/")){
+      alert("画像のみアップロードできます");
+      return;
+    }
+
+
+    if(file.size > 5 * 1024 * 1024){
+      alert("画像サイズは5MB以下にしてください");
+      return;
+    }
+
+
+    setCommentImage(file);
+
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setImagePreview(
+        reader.result as string
+      );
+    };
+
+    reader.readAsDataURL(file);
+  };
   /**
    * コンポーネントマウント時およびパラメータ変更時のデータ取得
    * 同一セッションでの重複カウントを防ぐため、useRefで最後に閲覧したpostIdを保持して比較
@@ -123,13 +159,46 @@ const PostDetail = () => {
   const handleCommentSubmit = async () => {
     if (!commentInput.trim() || !post) return;
 
-    await api.post(`/api/comments/posts/${post.postId}/comments`, {
-      content: commentInput,
-      parentId,
-    });
+    const fd = new FormData();
+
+
+    fd.append(
+      "content",
+      commentInput
+    );
+
+
+    if(parentId){
+      fd.append(
+        "parentId",
+        String(parentId)
+      );
+    }
+
+
+    if(commentImage){
+      fd.append(
+        "image",
+        commentImage
+      );
+    }
+
+
+
+    await api.post(
+      `/api/comments/posts/${post.postId}/comments`,
+      fd,
+      {
+        headers:{
+          "Content-Type":"multipart/form-data",
+        },
+      }
+    );
 
     setCommentInput("");
     setParentId(null);
+    setCommentImage(null);
+    setImagePreview(null);
     await loadPost();
   };
 
@@ -318,7 +387,68 @@ const PostDetail = () => {
                     placeholder={t("comment.placeholder")}
                   />
                 </div>
+                
+                <div className="mt-3">
+                  <label
+                    className="
+                      inline-flex
+                      cursor-pointer
+                      rounded-xl
+                      border
+                      border-gray-200
+                      bg-white
+                      px-4
+                      py-2
+                      text-sm
+                      hover:bg-gray-50
+                    "
+                  >
 
+                    📷 画像追加
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleCommentImage}
+                    />
+
+                  </label>
+
+
+                  {imagePreview && (
+                    <div className="mt-3">
+
+                      <img
+                        src={imagePreview}
+                        className="
+                          max-h-40
+                          rounded-xl
+                          border
+                          object-cover
+                        "
+                      />
+
+
+                      <button
+                        type="button"
+                        onClick={()=>{
+                          setCommentImage(null);
+                          setImagePreview(null);
+                        }}
+                        className="
+                          mt-2
+                          text-sm
+                          text-red-500
+                        "
+                      >
+                        削除
+                      </button>
+
+                    </div>
+                  )}
+
+                </div>
                 <div className="flex justify-end">
                   <button
                     onClick={handleCommentSubmit}
