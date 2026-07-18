@@ -136,6 +136,7 @@ const AdminPage = () => {
       isProtected:board.isProtected,
       password:"",
       });
+    }
 
   // 게시판 수정 취소
   const cancelEditBoard = () => {
@@ -624,5 +625,4 @@ const AdminPage = () => {
     </div>
   );
 };
-}
 export default AdminPage;
