@@ -12,7 +12,6 @@ jobs:
     steps:
       - name: Build on Server via SSH
         uses: appleboy/ssh-action@v1.0.3
-
         with:
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
@@ -27,20 +26,44 @@ jobs:
 
             nvm use 22
 
-            echo "Node: $(node -v)"
-            echo "NPM : $(npm -v)"
-            echo "PATH: $PATH"
-
             cd /home/myDev/task/jstask
 
             git pull origin main
-
             npm ci
-
             npm run build
 
             rm -rf /var/www/plug/*
-
             cp -r dist/* /var/www/plug/
-
             rm -rf dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+
+          script: |
+            set -e
+
+            docker rm -f nginx || true
+
+            docker run -d \
+              --name nginx \
+              --restart unless-stopped \
+              --network nginx_network \
+              -p 80:80 \
+              -p 443:443 \
+              -v /etc/nginx/conf.d:/etc/nginx/conf.d:ro \
+              -v /etc/letsencrypt:/etc/letsencrypt:ro \
+              -v /var/www:/var/www:ro \
+              nginx:latest
+
+            docker network connect jstaskback_default nginx || true
+            docker network connect task_default nginx || true
